@@ -55,7 +55,7 @@ export default function FilterSidebar() {
           <Filter className="h-5 w-5" />
           <span>Filters</span>
         </div>
-        {(currentCategory || currentMinPrice || currentMaxPrice || currentRating) && (
+        {(currentCategory || currentMinPrice || currentMaxPrice || currentRating || searchParams.get('eco')) && (
            <button 
              onClick={() => router.push('/explore')}
              className="text-xs text-primary hover:underline font-medium"
@@ -63,6 +63,19 @@ export default function FilterSidebar() {
              Clear All
            </button>
         )}
+      </div>
+
+      {/* Eco Filter */}
+      <div className="mb-6">
+        <label className="flex items-center space-x-3 cursor-pointer p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors">
+          <input 
+            type="checkbox" 
+            checked={searchParams.get('eco') === '1'}
+            onChange={(e) => updateUrl('eco', e.target.checked ? '1' : '')}
+            className="w-5 h-5 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 bg-white"
+          />
+          <span className="text-emerald-800 dark:text-emerald-300 font-semibold text-sm">Hanya Tampilkan Tempat Ramah Lingkungan 🍃</span>
+        </label>
       </div>
       
       {/* Categories */}

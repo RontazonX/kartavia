@@ -5,6 +5,9 @@ import { createClient } from "@/utils/supabase/server";
 import BookingForm from '@/components/booking/BookingForm';
 import ReviewForm from '@/components/reviews/ReviewForm';
 import WishlistButton from '@/components/shared/WishlistButton';
+import { getBookedSlots } from '@/components/booking/actions';
+import WasteReportForm from '@/components/explore/WasteReportForm';
+import { Leaf } from 'lucide-react';
 
 export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -43,6 +46,69 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
     highlights = [];
   }
 
+  // Ensure culinary_spots is an array
+  let culinarySpots = [];
+  try {
+    culinarySpots = typeof detail.culinary_spots === 'string' ? JSON.parse(detail.culinary_spots) : detail.culinary_spots;
+    if (!Array.isArray(culinarySpots)) culinarySpots = [];
+  } catch (e) {
+    culinarySpots = [];
+  }
+
+  // Ensure available_slots is an array
+  let availableSlots = [];
+  try {
+    availableSlots = typeof detail.available_slots === 'string' ? JSON.parse(detail.available_slots) : detail.available_slots;
+    if (!Array.isArray(availableSlots)) availableSlots = [];
+  } catch (e) {
+    availableSlots = [];
+  }
+
+  // Calculate Density Status
+  const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+  const bookedCounts = await getBookedSlots(id, today);
+  
+  // Find current active slot or next upcoming slot
+  const currentHour = new Date().getHours();
+  let activeSlot = availableSlots[0]; // fallback
+  for (const slot of availableSlots) {
+    // slot format "08:00 - 10:00"
+    const startHour = parseInt(slot.split(':')[0]);
+    if (currentHour >= startHour - 1 && currentHour <= startHour + 2) {
+      activeSlot = slot;
+      break;
+    }
+  }
+
+  const currentVisitors = bookedCounts[activeSlot] || 0;
+  const maxCapacity = detail.max_capacity || 100;
+  const densityPercentage = maxCapacity > 0 ? (currentVisitors / maxCapacity) * 100 : 0;
+  
+  let densityColor = 'bg-green-100 text-green-700 border-green-200';
+  let densityLabel = 'Lancar / Aman';
+  let isDense = false;
+
+  if (densityPercentage >= 90) {
+    densityColor = 'bg-red-100 text-red-700 border-red-200';
+    densityLabel = 'Padat / Penuh';
+    isDense = true;
+  } else if (densityPercentage >= 60) {
+    densityColor = 'bg-yellow-100 text-yellow-700 border-yellow-200';
+    densityLabel = 'Ramai Ramah';
+  }
+
+  // Fetch alternatives if dense
+  let alternatives: any[] = [];
+  if (isDense) {
+    const { data: altData } = await supabase
+      .from('destinations')
+      .select('id, title, location, image_url, rating, price')
+      .eq('category', detail.category)
+      .neq('id', id)
+      .limit(3);
+    alternatives = altData || [];
+  }
+
   return (
     <div className="bg-surface dark:bg-slate-900 min-h-screen pb-20 transition-colors">
       {/* Top Banner & Breadcrumb */}
@@ -75,7 +141,19 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
             {/* Header Info */}
             <div>
               <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
-                <h1 className="text-3xl md:text-4xl font-bold text-foreground dark:text-white">{detail.title}</h1>
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">{detail.title}</h1>
+                  <div className="flex flex-wrap gap-2">
+                    <div className={`inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold ${densityColor}`}>
+                      Status Live: {densityLabel} ({currentVisitors}/{maxCapacity})
+                    </div>
+                    {detail.admin_eco_score >= 4 && (
+                      <div className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                        <Leaf className="w-3 h-3 mr-1" /> Zero Waste Hero
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div className="flex items-center gap-3">
                   <span className="bg-primary/10 text-primary font-semibold px-3 py-1 rounded-full text-sm">
                     {detail.category}
@@ -120,10 +198,14 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 </>
               )}
               
-              <h3 className="font-semibold text-foreground mb-3 flex items-center">
-                <Clock className="h-5 w-5 mr-2 text-primary" /> Duration
+              <h3 className="font-semibold text-foreground mb-3 flex items-center mt-6">
+                <Clock className="h-5 w-5 mr-2 text-primary" /> Info Kunjungan
               </h3>
-              <p className="text-gray-600">{detail.duration}</p>
+              <ul className="text-gray-600 space-y-2">
+                <li><span className="font-medium text-gray-800 dark:text-gray-200">Durasi:</span> {detail.duration}</li>
+                <li><span className="font-medium text-gray-800 dark:text-gray-200">Jam Operasional:</span> {detail.operating_hours || '08:00 - 17:00'}</li>
+                <li><span className="font-medium text-gray-800 dark:text-gray-200">Kapasitas per Slot:</span> {maxCapacity} pengunjung</li>
+              </ul>
             </div>
 
             {/* Interactive Map */}
@@ -146,6 +228,81 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 <MapPin className="h-3 w-3" /> {detail.location}
               </p>
             </div>
+
+            {/* Citizen Waste Reporting */}
+            <WasteReportForm destinationId={detail.id} isLoggedIn={!!user} />
+
+            {/* Smart Redirection (Alternatives) */}
+            {isDense && alternatives.length > 0 && (
+              <div className="bg-rose-50 dark:bg-rose-900/10 rounded-2xl p-6 md:p-8 border border-rose-100 dark:border-rose-900/20">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                  Destinasi Sedang Padat
+                </h2>
+                <p className="text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
+                  Untuk kenyamanan Anda, destinasi ini sudah mencapai kapasitas maksimal pada jam ini. Silakan pilih slot waktu lain, atau jelajahi alternatif menarik di sekitar yang saat ini lebih lengang:
+                </p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {alternatives.map((alt: any) => (
+                    <Link href={`/detail/${alt.id}`} key={alt.id} className="block group">
+                      <div className="flex flex-col h-full bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                        <div className="h-40 w-full relative overflow-hidden bg-slate-100">
+                          {alt.image_url ? (
+                            <img src={alt.image_url} alt={alt.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">No Image</div>
+                          )}
+                          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-slate-900 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide shadow-sm">
+                            Kapasitas Tersedia
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:underline">{alt.title}</h3>
+                          <div className="flex items-center justify-between mt-3">
+                            <span className="text-xs text-slate-500 flex items-center"><Star className="h-3 w-3 text-slate-700 dark:text-slate-300 fill-slate-700 dark:fill-slate-300 mr-1"/> {alt.rating}</span>
+                            <span className="text-xs font-semibold text-slate-900 dark:text-white">Rp {Number(alt.price).toLocaleString('id-ID')}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Culinary Spots Section */}
+            {culinarySpots.length > 0 && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
+                  Kuliner Terdekat
+                </h2>
+                
+                <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar -mx-2 px-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                  {culinarySpots.map((spot: any, idx: number) => (
+                    <div key={idx} className="min-w-[280px] sm:min-w-[320px] flex gap-4 p-4 rounded-xl border border-slate-100 dark:border-slate-700 hover:shadow-md hover:-translate-y-1 transition-all duration-300 snap-start bg-surface dark:bg-slate-900 group cursor-pointer">
+                      <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-slate-100 shadow-sm">
+                        {spot.image ? (
+                          <img src={spot.image} alt={spot.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-slate-300">
+                            <span className="text-xs">No image</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">{spot.name}</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">{spot.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <style dangerouslySetInnerHTML={{__html: `
+                  .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}} />
+              </div>
+            )}
 
             {/* Reviews Section */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
@@ -196,7 +353,12 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
           {/* Booking Card (Right) */}
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-gray-100 dark:border-slate-700 sticky top-24 transition-colors">
-              <BookingForm destinationId={detail.id} pricePerPerson={Number(detail.price)} />
+              <BookingForm 
+                destinationId={detail.id} 
+                pricePerPerson={Number(detail.price)} 
+                availableSlots={availableSlots}
+                maxCapacity={maxCapacity}
+              />
             </div>
           </div>
         </div>

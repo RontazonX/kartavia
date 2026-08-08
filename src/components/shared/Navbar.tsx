@@ -39,6 +39,9 @@ export default async function Navbar() {
             <ThemeSwitcher />
             <LanguageSwitcher />
             
+            <Link href="/about" className="text-sm font-medium text-foreground hover:text-primary transition-colors hidden sm:block">
+              {t.navbar.about || 'About'}
+            </Link>
             <Link href="/explore" className="text-sm font-medium text-foreground hover:text-primary transition-colors hidden sm:block">
               {t.navbar.explore}
             </Link>

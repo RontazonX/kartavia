@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LayoutDashboard, MapPin, CalendarCheck, Search, Bell, MessageSquare, ChevronDown, Calendar, Settings } from 'lucide-react'
+import { LayoutDashboard, MapPin, CalendarCheck, Search, Bell, MessageSquare, ChevronDown, Calendar, Settings, Camera } from 'lucide-react'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { ThemeSwitcher } from '@/components/theme/ThemeSwitcher'
@@ -59,6 +59,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   </Link>
                 </li>
                 <li>
+                  <Link href="/admin/capacity" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    Capacity Control
+                  </Link>
+                </li>
+                <li>
                   <Link href="/admin/bookings" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
                     <CalendarCheck className="h-5 w-5" />
                     All Bookings
@@ -82,6 +90,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   <Link href="/admin/homepage" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
                     <Search className="h-5 w-5" /> {/* Using Search icon as placeholder for image/layout icon */}
                     Homepage
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/admin/waste-reports" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
+                    <Camera className="h-5 w-5" />
+                    Waste Reports
                   </Link>
                 </li>
                 <li>

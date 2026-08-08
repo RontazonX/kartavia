@@ -100,6 +100,23 @@ export default function DestinationForm({
         </div>
         
         <div className="col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Admin Eco-Score (0-5)</label>
+          <div className="flex items-center gap-4">
+            <input 
+              type="range" 
+              name="admin_eco_score" 
+              min="0" 
+              max="5" 
+              defaultValue={initialData?.admin_eco_score || 0} 
+              className="w-full accent-green-500" 
+              onChange={(e) => document.getElementById('eco-score-display')!.innerText = e.target.value}
+            />
+            <span id="eco-score-display" className="font-bold text-lg text-green-600 w-8">{initialData?.admin_eco_score || 0}</span>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">Set to 4 or 5 to show the "Zero Waste Hero" badge on the public listing.</p>
+        </div>
+        
+        <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
           <input type="text" name="duration" defaultValue={initialData?.duration} placeholder="e.g. 2-3 hours" required className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" />
         </div>

@@ -14,6 +14,7 @@ export async function createDestination(formData: FormData) {
   const duration = formData.get('duration') as string
   const description = formData.get('description') as string
   const highlightsString = formData.get('highlights') as string
+  const adminEcoScore = parseInt((formData.get('admin_eco_score') as string) || '0', 10)
   
   const highlights = highlightsString.split(',').map(h => h.trim()).filter(h => h.length > 0)
   
@@ -27,6 +28,7 @@ export async function createDestination(formData: FormData) {
     price,
     duration,
     description,
+    admin_eco_score: adminEcoScore,
     highlights: JSON.stringify(highlights),
     image_url: imageUrl,
     rating: 0,
@@ -53,6 +55,7 @@ export async function updateDestination(id: string, formData: FormData) {
   const duration = formData.get('duration') as string
   const description = formData.get('description') as string
   const highlightsString = formData.get('highlights') as string
+  const adminEcoScore = parseInt((formData.get('admin_eco_score') as string) || '0', 10)
   
   const highlights = highlightsString.split(',').map(h => h.trim()).filter(h => h.length > 0)
   
@@ -66,6 +69,7 @@ export async function updateDestination(id: string, formData: FormData) {
     price,
     duration,
     description,
+    admin_eco_score: adminEcoScore,
     highlights: JSON.stringify(highlights)
   }
   

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MapPin, Star } from 'lucide-react';
+import { MapPin, Star, Leaf } from 'lucide-react';
 import { createClient } from "@/utils/supabase/server";
 import FilterSidebar from '@/components/explore/FilterSidebar';
 import WishlistButton from '@/components/shared/WishlistButton';
@@ -12,6 +12,7 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
   const minPrice = searchParams?.min_price || '';
   const maxPrice = searchParams?.max_price || '';
   const rating = searchParams?.rating || '';
+  const eco = searchParams?.eco || '';
 
   const supabase = await createClient();
   const t = await getTranslation();
@@ -40,6 +41,10 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
 
   if (rating && !isNaN(Number(rating))) {
     query = query.gte('rating', Number(rating));
+  }
+
+  if (eco === '1') {
+    query = query.gte('admin_eco_score', 4);
   }
 
   const { data: destinationsResult } = await query;
@@ -90,10 +95,15 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
                          </div>
                        )}
                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-0" />
-                       <div className="absolute top-3 left-3 z-0">
-                         <span className="bg-white/90 text-primary text-xs font-bold px-2 py-1 rounded shadow-sm">
+                       <div className="absolute top-3 left-3 z-0 flex flex-col gap-2">
+                         <span className="bg-white/90 text-primary text-xs font-bold px-2 py-1 rounded shadow-sm self-start">
                            {item.category}
                          </span>
+                         {item.admin_eco_score >= 4 && (
+                           <span className="bg-emerald-500/90 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm self-start flex items-center">
+                             <Leaf className="w-3 h-3 mr-1" /> Zero Waste
+                           </span>
+                         )}
                        </div>
                        <div className="absolute bottom-3 left-3 z-0 flex items-center bg-white/20 backdrop-blur-md rounded-full px-2 py-1">
                          <Star className="h-3 w-3 text-yellow-400 fill-yellow-400 mr-1" />
