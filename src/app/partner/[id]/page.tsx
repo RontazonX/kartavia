@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { MapPin, Instagram, Map, Briefcase, Star, ArrowLeft } from 'lucide-react'
+import { MapPin, AtSign, Map, Briefcase, Star, ArrowLeft } from 'lucide-react'
 import { createClient } from '@/utils/supabase/server'
 import WishlistButton from '@/components/shared/WishlistButton'
 
@@ -76,7 +76,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2 bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 py-2.5 rounded-xl font-medium text-sm hover:bg-pink-100 dark:hover:bg-pink-900/40 transition-colors"
                 >
-                  <Instagram className="w-4 h-4" /> {partner.instagram_handle}
+                  <AtSign className="w-4 h-4" /> {partner.instagram_handle}
                 </a>
               )}
             </div>
