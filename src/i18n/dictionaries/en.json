@@ -1,0 +1,62 @@
+{
+  "navbar": {
+    "home": "Home",
+    "explore": "Explore",
+    "planner": "AI Planner",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "myBookings": "My Bookings",
+    "wishlist": "Wishlist",
+    "profile": "Profile",
+    "logOut": "Log Out"
+  },
+  "footer": {
+    "description": "Your ultimate travel companion for exploring Indonesia.",
+    "quickLinks": "Quick Links",
+    "contactUs": "Contact Us",
+    "rights": "All rights reserved."
+  },
+  "explore": {
+    "title": "Explore Destinations",
+    "subtitle": "Discover the hidden gems of Indonesia",
+    "searchPlaceholder": "Search destinations...",
+    "bookNow": "Book Now",
+    "reviews": "Reviews"
+  },
+  "planner": {
+    "title": "Kartavia AI Trip Planner ✨",
+    "subtitle": "Describe your dream vacation, and our AI will instantly craft a personalized day-by-day itinerary using our curated destinations.",
+    "letsPlan": "Let's Plan",
+    "promptLabel": "What kind of trip?",
+    "promptPlaceholder": "e.g. A romantic getaway for couples with lots of nature and cultural sites...",
+    "durationLabel": "Duration (Days)",
+    "days": "Days",
+    "generating": "Generating AI Magic...",
+    "generateBtn": "Generate Itinerary",
+    "noItinerary": "No Itinerary Yet",
+    "noItineraryDesc": "Fill out your preferences on the left and our AI will build the perfect schedule for you.",
+    "aiExploring": "Our AI is exploring destinations for you...",
+    "connecting": "Connecting to Knowledge Base...",
+    "day": "Day",
+    "suggestedVisit": "Suggested Visit:",
+    "readyToBook": "Ready to book this trip?",
+    "readyToBookDesc": "You can find all these amazing places in our Explore page to book them individually.",
+    "goToExplore": "Go to Explore"
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your personal information and account security.",
+    "personalInfo": "Personal Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "emailDisabled": "Email address cannot be changed.",
+    "security": "Security",
+    "newPassword": "New Password (Optional)",
+    "newPasswordPlaceholder": "Leave blank to keep current password",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "success": "Profile updated successfully!",
+    "error": "Failed to update profile. Please try again."
+  }
+}

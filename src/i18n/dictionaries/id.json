@@ -1,0 +1,62 @@
+{
+  "navbar": {
+    "home": "Beranda",
+    "explore": "Jelajah",
+    "planner": "Perencana AI",
+    "signIn": "Masuk",
+    "signUp": "Daftar",
+    "myBookings": "Pesanan Saya",
+    "wishlist": "Favorit",
+    "profile": "Profil",
+    "logOut": "Keluar"
+  },
+  "footer": {
+    "description": "Teman perjalanan terbaik Anda untuk menjelajahi Indonesia.",
+    "quickLinks": "Tautan Cepat",
+    "contactUs": "Hubungi Kami",
+    "rights": "Hak cipta dilindungi."
+  },
+  "explore": {
+    "title": "Jelajahi Destinasi",
+    "subtitle": "Temukan permata tersembunyi di Indonesia",
+    "searchPlaceholder": "Cari destinasi wisata...",
+    "bookNow": "Pesan Sekarang",
+    "reviews": "Ulasan"
+  },
+  "planner": {
+    "title": "Perencana Liburan AI ✨",
+    "subtitle": "Ceritakan liburan impian Anda, dan AI kami akan meracik rencana perjalanan harian yang disesuaikan khusus untuk Anda secara instan.",
+    "letsPlan": "Ayo Rencanakan",
+    "promptLabel": "Liburan seperti apa?",
+    "promptPlaceholder": "Cth: Liburan romantis untuk pasangan dengan banyak wisata alam dan budaya...",
+    "durationLabel": "Durasi (Hari)",
+    "days": "Hari",
+    "generating": "Meracik Keajaiban AI...",
+    "generateBtn": "Buat Rencana Perjalanan",
+    "noItinerary": "Belum Ada Rencana",
+    "noItineraryDesc": "Isi preferensi Anda di sebelah kiri dan AI kami akan membangun jadwal yang sempurna untuk Anda.",
+    "aiExploring": "AI kami sedang menjelajahi destinasi untuk Anda...",
+    "connecting": "Terhubung ke Basis Pengetahuan...",
+    "day": "Hari",
+    "suggestedVisit": "Saran Kunjungan:",
+    "readyToBook": "Siap memesan perjalanan ini?",
+    "readyToBookDesc": "Anda bisa menemukan semua tempat menakjubkan ini di halaman Jelajah untuk dipesan secara individual.",
+    "goToExplore": "Pergi ke Jelajah"
+  },
+  "profile": {
+    "title": "Pengaturan Profil",
+    "subtitle": "Kelola informasi pribadi dan keamanan akun Anda.",
+    "personalInfo": "Informasi Pribadi",
+    "firstName": "Nama Depan",
+    "lastName": "Nama Belakang",
+    "email": "Alamat Email",
+    "emailDisabled": "Alamat email tidak dapat diubah.",
+    "security": "Keamanan",
+    "newPassword": "Kata Sandi Baru (Opsional)",
+    "newPasswordPlaceholder": "Kosongkan jika tidak ingin mengubah sandi",
+    "saveChanges": "Simpan Perubahan",
+    "saving": "Menyimpan...",
+    "success": "Profil berhasil diperbarui!",
+    "error": "Gagal memperbarui profil. Silakan coba lagi."
+  }
+}
