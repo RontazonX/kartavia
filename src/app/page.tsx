@@ -24,14 +24,24 @@ const partners = [
 export default async function Home() {
   const supabase = await createClient();
   
-  // Fetch popular destinations
+  // Fetch popular destinations (excluding tours)
   const { data: popularDestinations } = await supabase
     .from('destinations')
     .select('*')
+    .neq('category', 'Tour')
+    .order('rating', { ascending: false })
+    .limit(4);
+
+  // Fetch popular tours
+  const { data: popularTours } = await supabase
+    .from('destinations')
+    .select('*')
+    .eq('category', 'Tour')
     .order('rating', { ascending: false })
     .limit(4);
 
   const destinations = popularDestinations || [];
+  const tours = popularTours || [];
 
   // Fetch Homepage Data
   const { data: bannersData } = await supabase.from('homepage_settings').select('data').eq('section', 'banners').single();
@@ -61,11 +71,28 @@ export default async function Home() {
       </section>
 
       {/* Popular Destinations Section */}
-      <section className="py-20 bg-white dark:bg-slate-900 transition-colors">
+      <section className="py-16 bg-white dark:bg-slate-900 transition-colors">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <DestinationGrid destinations={destinations} />
+          <DestinationGrid 
+            destinations={destinations} 
+            title="Popular Attractions" 
+            subtitle="Top places to visit around you" 
+          />
         </div>
       </section>
+
+      {/* Popular Tour Packages Section */}
+      {tours.length > 0 && (
+        <section className="pb-16 bg-white dark:bg-slate-900 transition-colors">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <DestinationGrid 
+              destinations={tours} 
+              title="Exclusive Tour Packages" 
+              subtitle="Curated multi-day experiences by our partners" 
+            />
+          </div>
+        </section>
+      )}
 
       {/* Culinary Recommendations Section */}
       <CulinarySpotlight />

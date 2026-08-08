@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { LayoutDashboard, MapPin, CalendarCheck, Search, Bell, MessageSquare, ChevronDown, Calendar, Settings, Camera } from 'lucide-react'
+import { LayoutDashboard, MapPin, CalendarCheck, Search, Bell, MessageSquare, ChevronDown, Calendar, Settings, Camera, Users, Briefcase } from 'lucide-react'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { ThemeSwitcher } from '@/components/theme/ThemeSwitcher'
@@ -56,6 +56,18 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   <Link href="/admin/destinations" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
                     <MapPin className="h-5 w-5" />
                     Destinations
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/admin/tours" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
+                    <Briefcase className="h-5 w-5" />
+                    Tour Packages
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/admin/partners" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
+                    <Users className="h-5 w-5" />
+                    Partners
                   </Link>
                 </li>
                 <li>

@@ -5,7 +5,11 @@ import DeleteButton from '@/components/admin/DeleteButton'
 
 export default async function AdminDestinations() {
   const supabase = await createClient()
-  const { data: destinations } = await supabase.from('destinations').select('*').order('created_at', { ascending: false })
+  const { data: destinations } = await supabase
+    .from('destinations')
+    .select('*')
+    .neq('category', 'Tour')
+    .order('created_at', { ascending: false })
 
   return (
     <div>

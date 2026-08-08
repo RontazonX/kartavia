@@ -5,10 +5,9 @@ import { Sparkles, ImagePlus, Loader2 } from 'lucide-react'
 import { findWikipediaImage } from '@/app/admin/destinations/ai-actions'
 import { createClient } from '@/utils/supabase/client'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function DestinationForm({ 
   initialData = null, 
-  action 
+  action
 }: { 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialData?: any, 
@@ -67,6 +66,7 @@ export default function DestinationForm({
 
   return (
     <form action={action} className="space-y-6">
+      <input type="hidden" name="category" value="Attraction" />
       <div className="grid grid-cols-2 gap-6">
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -85,14 +85,7 @@ export default function DestinationForm({
           <input type="text" name="location" defaultValue={initialData?.location} required className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-          <select name="category" defaultValue={initialData?.category || "Attraction"} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary">
-            <option value="Attraction">Attraction Tickets</option>
-            <option value="Tour">Tour Packages</option>
-            <option value="Rental">Car Rentals</option>
-          </select>
-        </div>
+
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Price (Rp)</label>

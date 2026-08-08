@@ -4,12 +4,12 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
-export async function createDestination(formData: FormData) {
+export async function createTour(formData: FormData) {
   const supabase = await createClient()
 
   const title = formData.get('title') as string
   const location = formData.get('location') as string
-  const category = formData.get('category') as string
+  const category = 'Tour'
   const price = parseFloat(formData.get('price') as string)
   const duration = formData.get('duration') as string
   const description = formData.get('description') as string
@@ -42,18 +42,18 @@ export async function createDestination(formData: FormData) {
     console.error(error)
   }
 
-  revalidatePath('/admin/destinations')
+  revalidatePath('/admin/tours')
   revalidatePath('/explore')
   revalidatePath('/')
-  redirect('/admin/destinations')
+  redirect('/admin/tours')
 }
 
-export async function updateDestination(id: string, formData: FormData) {
+export async function updateTour(id: string, formData: FormData) {
   const supabase = await createClient()
 
   const title = formData.get('title') as string
   const location = formData.get('location') as string
-  const category = formData.get('category') as string
+  const category = 'Tour'
   const price = parseFloat(formData.get('price') as string)
   const duration = formData.get('duration') as string
   const description = formData.get('description') as string
@@ -79,7 +79,7 @@ export async function updateDestination(id: string, formData: FormData) {
     highlights: JSON.stringify(highlights)
   }
   
-  if (imageUrlInput) {
+  if (imageUrlInput && imageUrlInput.trim() !== '') {
     updateData.image_url = imageUrlInput
   }
 
@@ -89,23 +89,21 @@ export async function updateDestination(id: string, formData: FormData) {
     console.error(error)
   }
 
-  revalidatePath('/admin/destinations')
-  revalidatePath('/explore')
+  revalidatePath('/admin/tours')
   revalidatePath(`/detail/${id}`)
+  revalidatePath('/explore')
   revalidatePath('/')
-  redirect('/admin/destinations')
+  redirect('/admin/tours')
 }
 
-export async function deleteDestination(id: string) {
+export async function deleteTour(id: string) {
   const supabase = await createClient()
   
-  await supabase.from('bookings').delete().eq('destination_id', id)
-  await supabase.from('reviews').delete().eq('destination_id', id)
   const { error } = await supabase.from('destinations').delete().eq('id', id)
   
-  if (error) console.error(error)
+  if (error) {
+    console.error(error)
+  }
   
-  revalidatePath('/admin/destinations')
-  revalidatePath('/explore')
-  revalidatePath('/')
+  revalidatePath('/admin/tours')
 }

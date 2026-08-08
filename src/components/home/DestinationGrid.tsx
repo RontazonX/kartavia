@@ -4,7 +4,15 @@ import React, { useRef } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Heart, Star, MapPin, Leaf } from "lucide-react";
 
-export default function DestinationGrid({ destinations }: { destinations: any[] }) {
+export default function DestinationGrid({ 
+  destinations, 
+  title = "Popular Destinations", 
+  subtitle = "Most visited places in Jogja" 
+}: { 
+  destinations: any[],
+  title?: string,
+  subtitle?: string
+}) {
   const scrollContainer = useRef<HTMLDivElement>(null);
 
   const handleScrollLeft = () => {
@@ -31,8 +39,8 @@ export default function DestinationGrid({ destinations }: { destinations: any[] 
     <div className="w-full">
       <div className="mb-6 flex items-end justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">Popular Destinations</h2>
-          <p className="text-slate-600">Most visited places in Jogja</p>
+          <h2 className="text-3xl font-bold text-slate-900 mb-2">{title}</h2>
+          <p className="text-slate-600">{subtitle}</p>
         </div>
         <div className="flex items-center gap-2 mb-1">
           <button

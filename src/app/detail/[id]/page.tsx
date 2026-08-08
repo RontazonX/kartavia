@@ -15,7 +15,10 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   
   const { data: detail } = await supabase
     .from('destinations')
-    .select('*')
+    .select(`
+      *,
+      partners (*)
+    `)
     .eq('id', id)
     .single();
 
@@ -301,6 +304,44 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                     display: none;
                   }
                 `}} />
+              </div>
+            )}
+
+            {/* Tentang Mitra (Tour Operator) */}
+            {detail.partners && (
+              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
+                  Tentang Mitra
+                </h2>
+                
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  <div className="w-24 h-24 shrink-0 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 shadow-sm flex items-center justify-center">
+                    {detail.partners.logo_url ? (
+                      <img src={detail.partners.logo_url} alt={detail.partners.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-xl font-bold text-gray-400">{detail.partners.name.substring(0,2).toUpperCase()}</span>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-4 mb-2">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center">
+                        {detail.partners.name}
+                        <CheckCircle className="w-4 h-4 ml-1 text-blue-500 fill-blue-500/20" />
+                      </h3>
+                      <div className="text-sm text-gray-500 flex items-center gap-4">
+                        <span className="flex items-center"><MapPin className="w-3.5 h-3.5 mr-1" /> {detail.partners.location}</span>
+                      </div>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4 leading-relaxed">
+                      {detail.partners.description}
+                    </p>
+                    
+                    <Link href={`/partner/${detail.partners.id}`} className="text-sm font-semibold text-primary hover:underline">
+                      Lihat Profil Lengkap
+                    </Link>
+                  </div>
+                </div>
               </div>
             )}
 

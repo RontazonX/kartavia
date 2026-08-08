@@ -1,9 +1,9 @@
-import { updateDestination } from '@/app/admin/destinations/actions'
+import { updateTour } from '@/app/admin/tours/actions'
 import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
-import DestinationForm from '@/components/admin/DestinationForm'
+import TourPackageForm from '@/components/admin/TourPackageForm'
 
-export default async function EditDestination({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditTour({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params
   const supabase = await createClient()
   
@@ -19,7 +19,7 @@ export default async function EditDestination({ params }: { params: Promise<{ id
     notFound()
   }
 
-  const updateDestinationWithId = updateDestination.bind(null, destination.id)
+  const updateTourWithId = updateTour.bind(null, destination.id)
   
   let parsedHighlights = []
   try {
@@ -31,12 +31,12 @@ export default async function EditDestination({ params }: { params: Promise<{ id
 
   return (
     <div className="max-w-2xl mx-auto pb-10">
-      <h1 className="text-2xl font-bold text-black mb-8">Edit Destination</h1>
+      <h1 className="text-2xl font-bold text-black mb-8">Edit Tour Package</h1>
       
       <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-        <DestinationForm 
+        <TourPackageForm 
           initialData={{ ...destination, highlightsString }} 
-          action={updateDestinationWithId} 
+          action={updateTourWithId} 
           partners={partners || []}
         />
       </div>
