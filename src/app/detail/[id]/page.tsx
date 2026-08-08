@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { MapPin, Star, Clock, CheckCircle, ChevronLeft, User } from 'lucide-react';
+import { MapPin, Star, Clock, CheckCircle, ChevronLeft, User, Check, X, Map } from 'lucide-react';
 import { createClient } from "@/utils/supabase/server";
 import BookingForm from '@/components/booking/BookingForm';
 import ReviewForm from '@/components/reviews/ReviewForm';
@@ -66,6 +66,14 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   } catch (e) {
     availableSlots = [];
   }
+
+  // Parse tour details
+  let includedBenefits = [];
+  let excludedBenefits = [];
+  let itinerary = [];
+  try { includedBenefits = typeof detail.included_benefits === 'string' ? JSON.parse(detail.included_benefits) : detail.included_benefits || []; } catch(e){}
+  try { excludedBenefits = typeof detail.excluded_benefits === 'string' ? JSON.parse(detail.excluded_benefits) : detail.excluded_benefits || []; } catch(e){}
+  try { itinerary = typeof detail.itinerary === 'string' ? JSON.parse(detail.itinerary) : detail.itinerary || []; } catch(e){}
 
   // Calculate Density Status
   const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
@@ -185,7 +193,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 {detail.description}
               </p>
               
-              {highlights.length > 0 && (
+              {highlights.length > 0 && detail.category !== 'Tour' && (
                 <>
                   <h3 className="font-semibold text-foreground mb-3 flex items-center">
                     <Star className="h-5 w-5 mr-2 text-primary" /> Highlights
@@ -200,6 +208,64 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                   </ul>
                 </>
               )}
+
+              {/* Tour Specific Details */}
+              {detail.category === 'Tour' && (
+                <div className="space-y-6 mt-6 border-t border-gray-100 dark:border-slate-700 pt-6">
+                  {includedBenefits.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center">
+                        <Check className="h-5 w-5 mr-2 text-emerald-500" /> Fasilitas yang Didapat
+                      </h3>
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {includedBenefits.map((item: string, idx: number) => (
+                          <li key={idx} className="flex items-start text-sm text-gray-600 dark:text-gray-300">
+                            <CheckCircle className="h-4 w-4 mr-2 text-emerald-500 flex-shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {excludedBenefits.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center">
+                        <X className="h-5 w-5 mr-2 text-rose-500" /> Tidak Termasuk
+                      </h3>
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {excludedBenefits.map((item: string, idx: number) => (
+                          <li key={idx} className="flex items-start text-sm text-gray-600 dark:text-gray-300">
+                            <X className="h-4 w-4 mr-2 text-rose-400 flex-shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {itinerary.length > 0 && (
+                    <div>
+                      <h3 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center">
+                        <Map className="h-5 w-5 mr-2 text-blue-500" /> Rencana Perjalanan (Itinerary)
+                      </h3>
+                      <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent">
+                        {itinerary.map((item: string, idx: number) => (
+                          <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                            <div className="flex items-center justify-center w-5 h-5 rounded-full border border-white bg-blue-100 text-blue-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 ml-[-9px] md:ml-0 z-10">
+                              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                            </div>
+                            <div className="w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] p-4 rounded border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 shadow-sm text-sm text-gray-600 dark:text-gray-300">
+                              {item}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               
               <h3 className="font-semibold text-foreground mb-3 flex items-center mt-6">
                 <Clock className="h-5 w-5 mr-2 text-primary" /> Info Kunjungan

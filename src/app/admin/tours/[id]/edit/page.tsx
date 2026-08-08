@@ -22,12 +22,24 @@ export default async function EditTour({ params }: { params: Promise<{ id: strin
   const updateTourWithId = updateTour.bind(null, destination.id)
   
   let parsedHighlights = []
+  let parsedIncluded = []
+  let parsedExcluded = []
+  let parsedItinerary = []
+  
   try {
     parsedHighlights = JSON.parse(destination.highlights)
   } catch {
     parsedHighlights = destination.highlights || []
   }
+  
+  try { parsedIncluded = JSON.parse(destination.included_benefits) } catch { parsedIncluded = destination.included_benefits || [] }
+  try { parsedExcluded = JSON.parse(destination.excluded_benefits) } catch { parsedExcluded = destination.excluded_benefits || [] }
+  try { parsedItinerary = JSON.parse(destination.itinerary) } catch { parsedItinerary = destination.itinerary || [] }
+  
   const highlightsString = Array.isArray(parsedHighlights) ? parsedHighlights.join(', ') : ''
+  const includedString = Array.isArray(parsedIncluded) ? parsedIncluded.join('\n') : ''
+  const excludedString = Array.isArray(parsedExcluded) ? parsedExcluded.join('\n') : ''
+  const itineraryString = Array.isArray(parsedItinerary) ? parsedItinerary.join('\n') : ''
 
   return (
     <div className="max-w-2xl mx-auto pb-10">
@@ -35,7 +47,13 @@ export default async function EditTour({ params }: { params: Promise<{ id: strin
       
       <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
         <TourPackageForm 
-          initialData={{ ...destination, highlightsString }} 
+          initialData={{ 
+            ...destination, 
+            highlightsString,
+            includedString,
+            excludedString,
+            itineraryString
+          }} 
           action={updateTourWithId} 
           partners={partners || []}
         />

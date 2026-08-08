@@ -84,6 +84,21 @@ export default function TourPackageForm({
         </div>
 
         <div className="col-span-2 md:col-span-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Included Benefits (newline separated)</label>
+          <textarea name="included_benefits" defaultValue={initialData?.includedString} placeholder="Hotel 4 Stars&#10;Breakfast&#10;Transportation" rows={4} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary"></textarea>
+        </div>
+
+        <div className="col-span-2 md:col-span-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Excluded Benefits (newline separated)</label>
+          <textarea name="excluded_benefits" defaultValue={initialData?.excludedString} placeholder="Flight Tickets&#10;Personal Expenses" rows={4} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary"></textarea>
+        </div>
+
+        <div className="col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Itinerary (newline separated)</label>
+          <textarea name="itinerary" defaultValue={initialData?.itineraryString} placeholder="Day 1: Arrival & Briefing&#10;Day 2: City Tour & Museum" rows={4} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary"></textarea>
+        </div>
+
+        <div className="col-span-2 md:col-span-1">
            <label className="block text-sm font-medium text-gray-700 mb-1">Eco-Score (0-5)</label>
            <input type="range" min="0" max="5" name="admin_eco_score" defaultValue={initialData?.admin_eco_score || 0} className="w-full" />
            <p className="text-xs text-gray-500 mt-1">Set to 4 or 5 to give this tour a Zero Waste Badge.</p>

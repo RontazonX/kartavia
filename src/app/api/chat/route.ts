@@ -1,35 +1,76 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@/utils/supabase/server';
+import OpenAI from 'openai';
 
 export async function POST(request: Request) {
   try {
-    const { message } = await request.json();
-
-    // Simulate network delay for AI thinking (1.5 seconds)
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Basic heuristic mock AI responses based on keywords in the user's message
-    const msgLower = message.toLowerCase();
-    let reply = "Maaf, saya tidak mengerti. Apakah Anda ingin rekomendasi wisata alam, budaya, atau kuliner di Yogyakarta?";
-
-    if (msgLower.includes('candi') || msgLower.includes('prambanan') || msgLower.includes('borobudur')) {
-      reply = "Untuk wisata candi, Candi Prambanan dan Borobudur adalah pilihan terbaik! Candi Prambanan menawarkan keindahan arsitektur Hindu, sedangkan Borobudur sangat memukau saat sunrise. Mau saya pesankan tiketnya?";
-    } else if (msgLower.includes('pantai') || msgLower.includes('gunung kidul')) {
-      reply = "Gunung Kidul surganya pantai! Anda wajib mengunjungi Pantai Indrayanti, Pantai Kukup, atau mencoba Cave Tubing di Gua Pindul. Mau lihat daftar paket wisatanya?";
-    } else if (msgLower.includes('makan') || msgLower.includes('kuliner') || msgLower.includes('gudeg')) {
-      reply = "Jangan lewatkan Gudeg Yu Djum atau Sate Klathak Pak Pong jika Anda mencari kuliner legendaris di Jogja. Sangat direkomendasikan!";
-    } else if (msgLower.includes('belanja') || msgLower.includes('malioboro')) {
-      reply = "Jalan Malioboro adalah pusat belanja ikonik di Jogja. Anda bisa beli batik, suvenir, dan makan di angkringan. Jangan lupa mampir ke Pasar Beringharjo!";
-    } else if (msgLower.includes('halo') || msgLower.includes('hai')) {
-      reply = "Halo juga! Saya siap membantu merencanakan perjalanan impian Anda di Yogyakarta. Destinasi seperti apa yang sedang Anda cari?";
-    } else if (msgLower.includes('harga') || msgLower.includes('murah')) {
-      reply = "Kami memiliki berbagai paket wisata mulai dari yang budget-friendly hingga premium. Silakan cek menu 'Explore' dan gunakan filter harga kami!";
+    const { messages } = await request.json();
+    
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json({ error: 'Invalid messages array' }, { status: 400 });
     }
 
+    const apiKey = process.env.NINEROUTER_API_KEY;
+    const baseURL = process.env.NINEROUTER_BASE_URL;
+    
+    if (!apiKey || !baseURL) {
+      return NextResponse.json(
+        { reply: "Maaf, sistem AI sedang offline karena konfigurasi 9Router belum lengkap." },
+        { status: 200 }
+      );
+    }
+
+    // Fetch context from database
+    const supabase = await createClient();
+    const { data: destinations } = await supabase
+      .from('destinations')
+      .select('id, title, category, location, price, rating');
+
+    // Build system instruction
+    const systemInstruction = `
+      Anda adalah "Kartavia AI", asisten travel lokal pintar dan ramah untuk platform pariwisata Kartavia di Yogyakarta.
+      Tugas utama Anda adalah merekomendasikan destinasi wisata (Attraction) dan Paket Tur (Tour) yang ada di database Kartavia kepada pengguna.
+      Gunakan bahasa Indonesia yang santai, sopan, antusias, dan profesional (menggunakan "Anda" atau "Kamu").
+
+      Berikut adalah database destinasi dan paket tur Kartavia yang tersedia saat ini:
+      ${JSON.stringify(destinations)}
+
+      Aturan penting:
+      1. JANGAN PERNAH merekomendasikan tempat atau paket tur yang TIDAK ADA di dalam database di atas. Jika pengguna menanyakan tempat di luar database, beritahu dengan sopan bahwa Kartavia belum memiliki paket/tiket untuk tempat tersebut, lalu tawarkan alternatif dari database.
+      2. Selalu sebutkan Harga (price) dan Kategori (Tour/Attraction) jika relevan, format harga dalam Rupiah.
+      3. Jika pengguna bertanya tentang fasilitas tur, lihat field 'included_benefits' dan 'excluded_benefits'.
+      4. Jangan berikan jawaban terlalu panjang, buatlah ringkas, *scannable* (gunakan bullet points jika perlu), dan persuasif agar pengguna tertarik memesan di Kartavia.
+      5. Selalu berikan respon sebagai asisten Kartavia, bukan AI umum.
+    `;
+
+    const openai = new OpenAI({
+      apiKey: apiKey,
+      baseURL: baseURL,
+    });
+
+    const modelName = process.env.NINEROUTER_CHAT_MODEL || 'kr/claude-sonnet-4.5';
+
+    const formattedMessages = messages.map((msg: any) => ({
+      role: msg.role === 'ai' ? 'assistant' : 'user',
+      content: msg.content
+    }));
+
+    const response = await openai.chat.completions.create({
+      model: modelName, 
+      messages: [
+        { role: 'system', content: systemInstruction },
+        ...formattedMessages
+      ],
+      temperature: 0.7,
+    });
+
+    const reply = response.choices[0]?.message?.content || "Maaf, saya tidak dapat merespon saat ini.";
+
     return NextResponse.json({ reply });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Chat API Error:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { reply: 'Maaf, ada error koneksi ke 9Router: ' + error.message },
       { status: 500 }
     );
   }

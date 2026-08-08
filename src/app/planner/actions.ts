@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import OpenAI from 'openai'
 
 export async function generateItinerary(formData: FormData) {
   const supabase = await createClient()
@@ -14,18 +14,23 @@ export async function generateItinerary(formData: FormData) {
     return { error: 'Please describe your dream trip' }
   }
 
-  // Cek API Key
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) {
-    return { error: 'API Key Gemini belum disetel di .env.local' }
+  // Cek API Key 9Router
+  const apiKey = process.env.NINEROUTER_API_KEY
+  const baseURL = process.env.NINEROUTER_BASE_URL
+  if (!apiKey || !baseURL) {
+    return { error: 'API Key atau Base URL 9Router belum disetel di .env.local' }
   }
 
-  // Fetch all destinations to use as context for the AI
-  const { data: destinations } = await supabase.from('destinations').select('*')
+  // Fetch all destinations to use as context for the AI (optimized for token usage)
+  const { data: destinations } = await supabase.from('destinations').select('id, title, category, location, price, rating')
   
   try {
-    const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+    const openai = new OpenAI({
+      apiKey: apiKey,
+      baseURL: baseURL,
+    });
+    
+    const modelName = process.env.NINEROUTER_PLANNER_MODEL || 'gemini/gemini-3-flash-preview';
     
     const systemInstruction = `
       You are a local travel expert in Yogyakarta, Indonesia. 
@@ -36,7 +41,7 @@ export async function generateItinerary(formData: FormData) {
       ${JSON.stringify(destinations)}
       
       Create a realistic and enjoyable ${days}-day itinerary. 
-      You MUST return the response strictly as a JSON array of objects. 
+      You MUST return the response strictly as a JSON array of objects without any markdown formatting like \`\`\`json.
       Each object represents one day and MUST have the following keys:
       - "day": integer (the day number, starting from 1)
       - "title": string (catchy title for the day)
@@ -49,24 +54,29 @@ export async function generateItinerary(formData: FormData) {
           "day": 1,
           "title": "Historical Wonders",
           "description": "Start your solo trip by visiting Prambanan...",
-          "destination": { "id": "...", "title": "Candi Prambanan", ... }
+          "destination": { "id": "...", "title": "Candi Prambanan" }
         }
       ]
     `
 
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: systemInstruction }] }],
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
-    })
+    const response = await openai.chat.completions.create({
+      model: modelName,
+      messages: [
+        { role: 'system', content: systemInstruction },
+        { role: 'user', content: 'Generate my itinerary now based on the system instructions. Only return raw JSON array.' }
+      ],
+      temperature: 0.7
+    });
     
-    const responseText = result.response.text()
+    // Some models wrap JSON in markdown block even if told not to
+    let responseText = response.choices[0]?.message?.content || "[]"
+    responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim()
+
     const itinerary = JSON.parse(responseText)
     
     return { success: true, itinerary }
   } catch (error: any) {
-    console.error("Gemini AI Error:", error)
-    return { error: 'Gagal membuat itinerary dengan AI: ' + error.message }
+    console.error("9Router API Error:", error)
+    return { error: 'Gagal membuat itinerary dengan AI 9Router: ' + error.message }
   }
 }
