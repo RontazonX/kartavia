@@ -17,26 +17,8 @@ export async function createDestination(formData: FormData) {
   
   const highlights = highlightsString.split(',').map(h => h.trim()).filter(h => h.length > 0)
   
-  const image = formData.get('image') as File
   const imageUrlInput = formData.get('image_url') as string
-  let imageUrl = imageUrlInput || null
-  
-  if (image && image.size > 0) {
-    const fileExt = image.name.split('.').pop()
-    const fileName = `${Math.random()}.${fileExt}`
-    const { error: uploadError, data } = await supabase.storage
-      .from('destination-images')
-      .upload(`public/${fileName}`, image)
-      
-    if (uploadError) {
-      console.error(uploadError)
-    } else {
-      const { data: publicUrlData } = supabase.storage
-        .from('destination-images')
-        .getPublicUrl(`public/${fileName}`)
-      imageUrl = publicUrlData.publicUrl
-    }
-  }
+  const imageUrl = imageUrlInput || null
 
   const { error } = await supabase.from('destinations').insert({
     title,
@@ -74,7 +56,6 @@ export async function updateDestination(id: string, formData: FormData) {
   
   const highlights = highlightsString.split(',').map(h => h.trim()).filter(h => h.length > 0)
   
-  const image = formData.get('image') as File
   const imageUrlInput = formData.get('image_url') as string
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,20 +69,7 @@ export async function updateDestination(id: string, formData: FormData) {
     highlights: JSON.stringify(highlights)
   }
   
-  if (image && image.size > 0) {
-    const fileExt = image.name.split('.').pop()
-    const fileName = `${Math.random()}.${fileExt}`
-    const { error: uploadError } = await supabase.storage
-      .from('destination-images')
-      .upload(`public/${fileName}`, image)
-      
-    if (!uploadError) {
-      const { data: publicUrlData } = supabase.storage
-        .from('destination-images')
-        .getPublicUrl(`public/${fileName}`)
-      updateData.image_url = publicUrlData.publicUrl
-    }
-  } else if (imageUrlInput) {
+  if (imageUrlInput) {
     updateData.image_url = imageUrlInput
   }
 

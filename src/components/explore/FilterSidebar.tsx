@@ -1,15 +1,26 @@
 'use client'
 
-import { Filter } from 'lucide-react'
+import { Filter, Star } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useState, useEffect } from 'react'
+import { useDebounce } from '@/hooks/useDebounce'
 
 export default function FilterSidebar() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
   const currentCategory = searchParams.get('category') || ''
-  
+  const currentMinPrice = searchParams.get('min_price') || ''
+  const currentMaxPrice = searchParams.get('max_price') || ''
+  const currentRating = searchParams.get('rating') || ''
+
+  const [minPrice, setMinPrice] = useState(currentMinPrice)
+  const [maxPrice, setMaxPrice] = useState(currentMaxPrice)
+
+  // Use the highly efficient debounce hook to delay URL updates until typing stops
+  const debouncedMinPrice = useDebounce(minPrice, 500)
+  const debouncedMaxPrice = useDebounce(maxPrice, 500)
+
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -23,60 +34,98 @@ export default function FilterSidebar() {
     [searchParams]
   )
 
-  const handleCategoryChange = (category: string) => {
-    router.push('/explore?' + createQueryString('category', category))
-  }
+  const updateUrl = useCallback((name: string, value: string) => {
+    router.push('/explore?' + createQueryString(name, value))
+  }, [router, createQueryString])
+
+  // Effect to sync debounced prices to URL
+  useEffect(() => {
+    if (debouncedMinPrice !== currentMinPrice) updateUrl('min_price', debouncedMinPrice)
+  }, [debouncedMinPrice, currentMinPrice, updateUrl])
+
+  useEffect(() => {
+    if (debouncedMaxPrice !== currentMaxPrice) updateUrl('max_price', debouncedMaxPrice)
+  }, [debouncedMaxPrice, currentMaxPrice, updateUrl])
+
 
   return (
     <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 sticky top-24 transition-colors">
-      <div className="flex items-center gap-2 mb-6 text-foreground dark:text-white font-semibold">
-        <Filter className="h-5 w-5" />
-        <span>Filters</span>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2 text-foreground dark:text-white font-semibold">
+          <Filter className="h-5 w-5" />
+          <span>Filters</span>
+        </div>
+        {(currentCategory || currentMinPrice || currentMaxPrice || currentRating) && (
+           <button 
+             onClick={() => router.push('/explore')}
+             className="text-xs text-primary hover:underline font-medium"
+           >
+             Clear All
+           </button>
+        )}
       </div>
       
-      <div className="mb-6">
-        <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">Categories</h3>
-        <div className="space-y-2">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input 
-              type="radio" 
-              name="category"
-              className="rounded text-primary focus:ring-primary" 
-              checked={currentCategory === ''}
-              onChange={() => handleCategoryChange('')}
-            />
-            <span className="text-sm text-gray-600 dark:text-gray-300">All</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input 
-              type="radio" 
-              name="category"
-              className="rounded text-primary focus:ring-primary" 
-              checked={currentCategory === 'Attraction'}
-              onChange={() => handleCategoryChange('Attraction')}
-            />
-            <span className="text-sm text-gray-600 dark:text-gray-300">Attraction Tickets</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input 
-              type="radio" 
-              name="category"
-              className="rounded text-primary focus:ring-primary" 
-              checked={currentCategory === 'Tour'}
-              onChange={() => handleCategoryChange('Tour')}
-            />
-            <span className="text-sm text-gray-600 dark:text-gray-300">Tour Packages</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input 
-              type="radio" 
-              name="category"
-              className="rounded text-primary focus:ring-primary" 
-              checked={currentCategory === 'Rental'}
-              onChange={() => handleCategoryChange('Rental')}
-            />
-            <span className="text-sm text-gray-600 dark:text-gray-300">Car Rentals</span>
-          </label>
+      {/* Categories */}
+      <div className="mb-8">
+        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">Categories</h3>
+        <div className="space-y-3">
+          {['', 'Attraction', 'Tour', 'Rental'].map((cat) => (
+            <label key={cat} className="flex items-center gap-3 cursor-pointer group">
+              <input 
+                type="radio" 
+                name="category"
+                className="w-4 h-4 rounded-full text-primary focus:ring-primary border-gray-300" 
+                checked={currentCategory === cat}
+                onChange={() => updateUrl('category', cat)}
+              />
+              <span className={`text-sm ${currentCategory === cat ? 'text-primary font-medium' : 'text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors'}`}>
+                {cat === '' ? 'All Destinations' : cat}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Price Range */}
+      <div className="mb-8">
+        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">Price Range (Rp)</h3>
+        <div className="flex items-center gap-2">
+          <input 
+            type="number"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            placeholder="Min"
+            className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white"
+          />
+          <span className="text-gray-400">-</span>
+          <input 
+            type="number"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            placeholder="Max"
+            className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white"
+          />
+        </div>
+      </div>
+
+      {/* Rating */}
+      <div>
+        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">Minimum Rating</h3>
+        <div className="space-y-3">
+          {[4.5, 4.0, 3.0].map((rating) => (
+            <label key={rating} className="flex items-center gap-3 cursor-pointer group">
+              <input 
+                type="radio" 
+                name="rating"
+                className="w-4 h-4 rounded-full text-primary focus:ring-primary border-gray-300" 
+                checked={currentRating === rating.toString()}
+                onChange={() => updateUrl('rating', rating.toString())}
+              />
+              <span className="flex items-center text-sm text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                {rating}+ <Star className="w-3 h-3 ml-1 fill-yellow-400 text-yellow-400" />
+              </span>
+            </label>
+          ))}
         </div>
       </div>
     </div>

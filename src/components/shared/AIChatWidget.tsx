@@ -6,7 +6,7 @@ import { MessageSquare, X, Send, Bot } from 'lucide-react'
 export default function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<{role: 'user'|'ai', content: string}[]>([
-    { role: 'ai', content: 'Halo! Saya adalah AI Asisten Kartavia. Karena saya masih dalam mode simulasi, saya belum bisa membalas dengan akurat. Ada yang bisa dibantu?' }
+    { role: 'ai', content: 'Halo! Saya adalah Kartavia AI Assistant. Ada yang bisa saya bantu untuk merencanakan liburan Anda di Yogyakarta?' }
   ])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -20,24 +20,35 @@ export default function AIChatWidget() {
     scrollToBottom()
   }, [messages, isTyping])
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input.trim()) return
+    if (!input.trim() || isTyping) return
 
-    // Add user message
-    const userMsg = input
+    const userMsg = input.trim()
     setMessages(prev => [...prev, { role: 'user', content: userMsg }])
     setInput('')
     setIsTyping(true)
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMsg }),
+      })
+
+      if (!response.ok) throw new Error('API Error')
+      
+      const data = await response.json()
+      
+      setMessages(prev => [...prev, { role: 'ai', content: data.reply }])
+    } catch (error) {
       setMessages(prev => [...prev, { 
         role: 'ai', 
-        content: `Terima kasih! Pesan Anda "${userMsg}" telah kami terima. Namun, fitur AI ini masih dalam tahap simulasi.` 
+        content: 'Maaf, saya sedang mengalami gangguan koneksi. Silakan coba lagi nanti.' 
       }])
+    } finally {
       setIsTyping(false)
-    }, 1500)
+    }
   }
 
   return (

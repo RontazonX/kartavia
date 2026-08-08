@@ -79,6 +79,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   </Link>
                 </li>
                 <li>
+                  <Link href="/admin/homepage" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
+                    <Search className="h-5 w-5" /> {/* Using Search icon as placeholder for image/layout icon */}
+                    Homepage
+                  </Link>
+                </li>
+                <li>
                   <Link href="/admin/settings" className="group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-gray-300 duration-300 ease-in-out hover:bg-[#333A48] hover:text-white">
                     <Settings className="h-5 w-5" />
                     Settings

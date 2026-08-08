@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, ImagePlus, Loader2 } from 'lucide-react'
 import { findWikipediaImage } from '@/app/admin/destinations/ai-actions'
+import { createClient } from '@/utils/supabase/client'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function DestinationForm({ 
@@ -14,9 +15,11 @@ export default function DestinationForm({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action: any
 }) {
+  const supabase = createClient()
   const [title, setTitle] = useState(initialData?.title || '')
   const [imageUrl, setImageUrl] = useState(initialData?.image_url || '')
   const [isFindingImage, setIsFindingImage] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
   const [imageError, setImageError] = useState('')
 
   const handleAutoFind = async () => {
@@ -34,6 +37,32 @@ export default function DestinationForm({
       setImageError(res.error || 'Image not found')
     }
     setIsFindingImage(false)
+  }
+
+  const handleFileUpload = async (file: File) => {
+    if (!file) return;
+    setIsUploading(true);
+    setImageError('');
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('destination-images')
+        .upload(`public/${fileName}`, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('destination-images')
+        .getPublicUrl(`public/${fileName}`);
+
+      setImageUrl(publicUrl);
+    } catch (error: any) {
+      setImageError(`Upload gagal: ${error.message}`);
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   return (
@@ -92,8 +121,32 @@ export default function DestinationForm({
           {imageError && <p className="text-red-500 text-xs mb-3">{imageError}</p>}
           
           <div className="space-y-4">
+            <div className="aspect-video w-full md:w-2/3 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 dark:border-slate-700 bg-gray-50 relative group mx-auto flex items-center justify-center">
+                {imageUrl ? (
+                  <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-gray-400 flex flex-col items-center">
+                     <ImagePlus className="w-8 h-8 mb-2" />
+                     <span className="text-sm">Belum ada gambar</span>
+                  </div>
+                )}
+                
+                <div className={`absolute inset-0 bg-black/40 ${imageUrl ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'} transition-opacity flex items-center justify-center gap-4`}>
+                  <label className={`cursor-pointer bg-white text-gray-900 px-4 py-2 rounded-lg font-medium text-sm flex items-center shadow-lg hover:scale-105 transition-transform ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                    {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ImagePlus className="w-4 h-4 mr-2" />} 
+                    {isUploading ? 'Mengunggah...' : (imageUrl ? 'Ganti Gambar' : 'Upload File')}
+                    <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files && handleFileUpload(e.target.files[0])} />
+                  </label>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-4 py-2">
+               <div className="h-[1px] flex-1 bg-gray-200"></div>
+               <span className="text-xs font-medium text-gray-400 uppercase">ATAU GUNAKAN URL Link / AI</span>
+               <div className="h-[1px] flex-1 bg-gray-200"></div>
+            </div>
+
             <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Image URL (Auto-filled by AI)</label>
                 <input 
                   type="text" 
                   name="image_url" 
@@ -103,24 +156,7 @@ export default function DestinationForm({
                   className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" 
                 />
             </div>
-            
-            <div className="flex items-center gap-4">
-               <div className="h-[1px] flex-1 bg-gray-200"></div>
-               <span className="text-xs font-medium text-gray-400 uppercase">OR Upload Manual</span>
-               <div className="h-[1px] flex-1 bg-gray-200"></div>
-            </div>
-
-            <div>
-              <input type="file" name="image" accept="image/*" className="w-full border border-gray-300 rounded-lg p-2 bg-white text-sm" />
-            </div>
           </div>
-          
-          {imageUrl && (
-            <div className="mt-4 rounded-lg overflow-hidden border border-gray-200 w-32 h-32 relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
-            </div>
-          )}
         </div>
 
         <div className="col-span-2">

@@ -10,6 +10,7 @@ export default function PlannerClient() {
   const { t } = useTranslation()
   const [prompt, setPrompt] = useState('')
   const [days, setDays] = useState(3)
+  const [tripType, setTripType] = useState('solo')
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState('')
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +24,7 @@ export default function PlannerClient() {
     const formData = new FormData()
     formData.append('prompt', prompt)
     formData.append('days', days.toString())
+    formData.append('tripType', tripType)
     
     const res = await generateItinerary(formData)
     
@@ -53,6 +55,26 @@ export default function PlannerClient() {
               className="w-full border border-gray-300 rounded-xl p-4 focus:ring-primary focus:border-primary resize-none h-32"
               required
             ></textarea>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tipe Perjalanan</label>
+            <div className="grid grid-cols-2 gap-3">
+               <button 
+                 type="button" 
+                 onClick={() => setTripType('solo')}
+                 className={`py-3 px-4 rounded-xl border text-sm font-medium transition-colors ${tripType === 'solo' ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+               >
+                 Solo Trip 🎒
+               </button>
+               <button 
+                 type="button" 
+                 onClick={() => setTripType('group')}
+                 className={`py-3 px-4 rounded-xl border text-sm font-medium transition-colors ${tripType === 'group' ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+               >
+                 Group Trip 👨‍👩‍👧‍👦
+               </button>
+            </div>
           </div>
           
           <div>

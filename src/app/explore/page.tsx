@@ -5,10 +5,13 @@ import FilterSidebar from '@/components/explore/FilterSidebar';
 import WishlistButton from '@/components/shared/WishlistButton';
 import { getTranslation } from '@/i18n/server';
 
-export default async function ExplorePage(props: { searchParams: Promise<{ q?: string; category?: string }> }) {
+export default async function ExplorePage(props: { searchParams: Promise<{ q?: string; category?: string; min_price?: string; max_price?: string; rating?: string }> }) {
   const searchParams = await props.searchParams;
   const q = searchParams?.q || '';
   const category = searchParams?.category || '';
+  const minPrice = searchParams?.min_price || '';
+  const maxPrice = searchParams?.max_price || '';
+  const rating = searchParams?.rating || '';
 
   const supabase = await createClient();
   const t = await getTranslation();
@@ -25,6 +28,18 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
   
   if (category) {
     query = query.eq('category', category);
+  }
+
+  if (minPrice && !isNaN(Number(minPrice))) {
+    query = query.gte('price', Number(minPrice));
+  }
+
+  if (maxPrice && !isNaN(Number(maxPrice))) {
+    query = query.lte('price', Number(maxPrice));
+  }
+
+  if (rating && !isNaN(Number(rating))) {
+    query = query.gte('rating', Number(rating));
   }
 
   const { data: destinationsResult } = await query;

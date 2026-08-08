@@ -5,11 +5,14 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 
 export async function login(formData: FormData): Promise<{ error?: string }> {
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+
   const supabase = await createClient()
 
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email,
+    password,
   }
 
   const { error } = await supabase.auth.signInWithPassword(data)
