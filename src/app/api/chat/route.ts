@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     const modelName = process.env.NINEROUTER_CHAT_MODEL || 'kr/claude-sonnet-4.5';
 
     const formattedMessages = messages.map((msg: any) => ({
-      role: msg.role === 'ai' ? 'assistant' : 'user',
+      role: (msg.role === 'ai' ? 'assistant' : 'user') as 'assistant' | 'user',
       content: msg.content
     }));
 

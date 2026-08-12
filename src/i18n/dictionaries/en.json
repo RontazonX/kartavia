@@ -1,6 +1,7 @@
 {
   "navbar": {
     "home": "Home",
+    "about": "About",
     "explore": "Explore",
     "planner": "AI Planner",
     "signIn": "Sign In",

@@ -5,7 +5,7 @@ import FilterSidebar from '@/components/explore/FilterSidebar';
 import WishlistButton from '@/components/shared/WishlistButton';
 import { getTranslation } from '@/i18n/server';
 
-export default async function ExplorePage(props: { searchParams: Promise<{ q?: string; category?: string; min_price?: string; max_price?: string; rating?: string }> }) {
+export default async function ExplorePage(props: { searchParams: Promise<{ q?: string; category?: string; min_price?: string; max_price?: string; rating?: string; eco?: string }> }) {
   const searchParams = await props.searchParams;
   const q = searchParams?.q || '';
   const category = searchParams?.category || '';
