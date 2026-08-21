@@ -17,14 +17,6 @@ export default function AnalyticsChart({ data }: { data: any[] }) {
     value: distribution[key]
   })).sort((a, b) => b.value - a.value).slice(0, 5) // Top 5
 
-  if (chartData.length === 0) {
-    chartData.push(
-      { name: 'Beach', value: 45 },
-      { name: 'Mountain', value: 30 },
-      { name: 'City', value: 15 },
-      { name: 'Culture', value: 10 }
-    )
-  }
 
   const COLORS = ['#3C50E0', '#6577F3', '#8FD0EF', '#0FADCF', '#80CAEE']
 

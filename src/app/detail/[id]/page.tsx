@@ -8,7 +8,47 @@ import WishlistButton from '@/components/shared/WishlistButton';
 import { getBookedSlots } from '@/components/booking/actions';
 import WasteReportForm from '@/components/explore/WasteReportForm';
 import { Leaf } from 'lucide-react';
+import type { Metadata } from 'next';
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: detail } = await supabase.from('destinations').select('title, description, image_url').eq('id', id).single();
+  
+  if (!detail) {
+    return { title: 'Destination Not Found - Kartavia' };
+  }
+
+  return {
+    title: `${detail.title} - Kartavia`,
+    description: detail.description.substring(0, 160),
+    openGraph: {
+      title: `${detail.title} - Wisata Yogyakarta`,
+      description: detail.description.substring(0, 160),
+      images: detail.image_url ? [{ url: detail.image_url }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: detail.title,
+      description: detail.description.substring(0, 160),
+      images: detail.image_url ? [detail.image_url] : [],
+    }
+  };
+}
+
+export async function generateStaticParams() {
+  const { createClient: createJSClient } = await import('@supabase/supabase-js');
+  const supabase = createJSClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  
+  // Fetch top 10 destinations for static generation
+  const { data: destinations } = await supabase.from('destinations').select('id').limit(10);
+  
+  if (!destinations) return [];
+
+  return destinations.map((destination) => ({
+    id: destination.id,
+  }));
+}
 export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();

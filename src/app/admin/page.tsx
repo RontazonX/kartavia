@@ -1,81 +1,98 @@
 import { createClient } from '@/utils/supabase/server'
-import { Users, MapPin, DollarSign, ArrowUp, ArrowDown, Eye } from 'lucide-react'
+import { Users, DollarSign, ArrowUp, ArrowDown, Map } from 'lucide-react'
 import RevenueChart from '@/components/admin/RevenueChart'
 import AnalyticsChart from '@/components/admin/AnalyticsChart'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
 
-  const { count: destCount } = await supabase.from('destinations').select('*', { count: 'exact', head: true })
-  const { count: bookCount } = await supabase.from('bookings').select('*', { count: 'exact', head: true })
+  // 1. Fetch Destinations
+  const { data: destinations } = await supabase.from('destinations').select('*')
+  const destCount = destinations?.length || 0
   
+  // 2. Fetch Bookings
   const { data: bookings } = await supabase.from('bookings').select('*, destinations(title)')
-  const totalRevenue = bookings?.reduce((acc, curr) => acc + Number(curr.total_price), 0) || 0
+  const totalRevenue = bookings?.filter(b => b.status === 'paid').reduce((acc, curr) => acc + Number(curr.total_price), 0) || 0
   
-  // Sort bookings by date descending for recent bookings
+  // --- CALCULATION OF MONTH-OVER-MONTH (MoM) CHANGES ---
+  const now = new Date()
+  const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+  const prevMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  const prevMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0)
+
+  // Booking Stats
+  let currentMonthBookings = 0
+  let prevMonthBookings = 0
+  let currentMonthRevenue = 0
+  let prevMonthRevenue = 0
+
+  bookings?.forEach(b => {
+    const d = new Date(b.created_at)
+    if (d >= currentMonthStart) {
+      currentMonthBookings++
+      if (b.status === 'paid') currentMonthRevenue += Number(b.total_price)
+    } else if (d >= prevMonthStart && d <= prevMonthEnd) {
+      prevMonthBookings++
+      if (b.status === 'paid') prevMonthRevenue += Number(b.total_price)
+    }
+  })
+
+  // Helper function to calculate percentage
+  const calculateChange = (current: number, previous: number) => {
+    if (previous === 0) return current > 0 ? 100 : 0
+    return ((current - previous) / previous) * 100
+  }
+
+  const revenueChange = calculateChange(currentMonthRevenue, prevMonthRevenue)
+  const bookingsChange = calculateChange(currentMonthBookings, prevMonthBookings)
+
+  // Render Indicator
+  const renderIndicator = (change: number) => {
+    if (change === 0) return <span className="text-sm font-medium text-gray-500">0%</span>
+    if (change > 0) {
+      return (
+        <span className="flex items-center gap-1 text-sm font-medium text-success-500">
+          {change.toFixed(1)}% <ArrowUp className="h-4 w-4" />
+        </span>
+      )
+    }
+    return (
+      <span className="flex items-center gap-1 text-sm font-medium text-error-500">
+        {Math.abs(change).toFixed(1)}% <ArrowDown className="h-4 w-4" />
+      </span>
+    )
+  }
+
+  // Sort bookings by date descending for recent bookings table
   const recentBookings = [...(bookings || [])].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5)
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5 mb-8">
-        {/* Card 1 */}
-        <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 px-7.5 shadow-sm transition-colors">
-          <div className="flex items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800 h-12 w-12 text-brand-500 mb-4">
-            <Eye className="h-6 w-6" />
-          </div>
-          <div className="mt-4 flex items-end justify-between">
-            <div>
-              <h4 className="font-bold text-black dark:text-white text-2xl">
-                3.456K
-              </h4>
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Views</span>
-            </div>
-            <span className="flex items-center gap-1 text-sm font-medium text-success-500">
-              0.43%
-              <ArrowUp className="h-4 w-4" />
-            </span>
-          </div>
-        </div>
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+          Business Dashboard
+        </h2>
+      </div>
 
-        {/* Card 2 */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 xl:grid-cols-3 2xl:gap-7.5 mb-8">
+        
+        {/* Card 1: Revenue */}
         <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 px-7.5 shadow-sm transition-colors">
           <div className="flex items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800 h-12 w-12 text-brand-500 mb-4">
             <DollarSign className="h-6 w-6" />
           </div>
           <div className="mt-4 flex items-end justify-between">
             <div>
-              <h4 className="font-bold text-black dark:text-white text-2xl">
-                Rp {(totalRevenue / 1000000).toFixed(1)}M
+              <h4 className="font-bold text-black dark:text-white text-2xl truncate max-w-[200px]">
+                Rp {totalRevenue >= 1000000 ? (totalRevenue / 1000000).toFixed(1) + 'M' : totalRevenue.toLocaleString('id-ID')}
               </h4>
               <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Profit</span>
             </div>
-            <span className="flex items-center gap-1 text-sm font-medium text-success-500">
-              4.35%
-              <ArrowUp className="h-4 w-4" />
-            </span>
+            {renderIndicator(revenueChange)}
           </div>
         </div>
 
-        {/* Card 3 */}
-        <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 px-7.5 shadow-sm transition-colors">
-          <div className="flex items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800 h-12 w-12 text-brand-500 mb-4">
-            <MapPin className="h-6 w-6" />
-          </div>
-          <div className="mt-4 flex items-end justify-between">
-            <div>
-              <h4 className="font-bold text-black dark:text-white text-2xl">
-                {destCount}
-              </h4>
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Destinations</span>
-            </div>
-            <span className="flex items-center gap-1 text-sm font-medium text-success-500">
-              2.59%
-              <ArrowUp className="h-4 w-4" />
-            </span>
-          </div>
-        </div>
-
-        {/* Card 4 */}
+        {/* Card 2: Bookings */}
         <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 px-7.5 shadow-sm transition-colors">
           <div className="flex items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800 h-12 w-12 text-brand-500 mb-4">
             <Users className="h-6 w-6" />
@@ -83,14 +100,26 @@ export default async function AdminDashboard() {
           <div className="mt-4 flex items-end justify-between">
             <div>
               <h4 className="font-bold text-black dark:text-white text-2xl">
-                {bookCount}
+                {bookings?.length || 0}
               </h4>
               <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Bookings</span>
             </div>
-            <span className="flex items-center gap-1 text-sm font-medium text-error-500">
-              0.95%
-              <ArrowDown className="h-4 w-4" />
-            </span>
+            {renderIndicator(bookingsChange)}
+          </div>
+        </div>
+
+        {/* Card 3: Destinations */}
+        <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 px-7.5 shadow-sm transition-colors">
+          <div className="flex items-center justify-center rounded-full bg-gray-100 dark:bg-slate-800 h-12 w-12 text-brand-500 mb-4">
+            <Map className="h-6 w-6" />
+          </div>
+          <div className="mt-4 flex items-end justify-between">
+            <div>
+              <h4 className="font-bold text-black dark:text-white text-2xl">
+                {destCount}
+              </h4>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Active Destinations</span>
+            </div>
           </div>
         </div>
       </div>
@@ -138,7 +167,7 @@ export default async function AdminDashboard() {
                 key={booking.id}
               >
                 <div className="flex items-center gap-3 p-4">
-                  <p className="hidden text-black dark:text-white font-medium sm:block">
+                  <p className="hidden text-black dark:text-white font-medium sm:block truncate">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(booking.destinations as any)?.title}
                   </p>

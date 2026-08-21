@@ -1,25 +1,53 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, ImagePlus, Loader2 } from 'lucide-react'
-import { findWikipediaImage } from '@/app/admin/destinations/ai-actions'
+import { Sparkles, ImagePlus, Loader2, Wand2 } from 'lucide-react'
+import { findWikipediaImage, generateDescriptionAI } from '@/app/admin/destinations/ai-actions'
 import { createClient } from '@/utils/supabase/client'
 
 export default function DestinationForm({ 
   initialData = null, 
-  action
+  action,
+  partners = []
 }: { 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialData?: any, 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  action: any
+  action: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  partners?: any[]
 }) {
   const supabase = createClient()
   const [title, setTitle] = useState(initialData?.title || '')
   const [imageUrl, setImageUrl] = useState(initialData?.image_url || '')
+  const [description, setDescription] = useState(initialData?.description || '')
+  const [highlights, setHighlights] = useState(initialData?.highlightsString || '')
   const [isFindingImage, setIsFindingImage] = useState(false)
+  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [imageError, setImageError] = useState('')
+  const [aiError, setAiError] = useState('')
+
+  const handleGenerateDescription = async () => {
+    const loc = (document.querySelector('input[name="location"]') as HTMLInputElement)?.value;
+    
+    if (!title || !loc) {
+      setAiError('Please enter both Title and Location first')
+      return
+    }
+    
+    setIsGeneratingDesc(true)
+    setAiError('')
+    
+    const res = await generateDescriptionAI(title, loc)
+    if (res.success) {
+      if (res.description) setDescription(res.description)
+      if (res.highlights) setHighlights(res.highlights)
+    } else {
+      setAiError(res.error || 'Failed to generate description')
+    }
+    setIsGeneratingDesc(false)
+  }
 
   const handleAutoFind = async () => {
     if (!title) {
@@ -170,13 +198,39 @@ export default function DestinationForm({
         </div>
 
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea name="description" defaultValue={initialData?.description} rows={4} required className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary"></textarea>
+          <div className="flex justify-between items-center mb-1">
+             <label className="block text-sm font-medium text-gray-700">Description</label>
+             <button 
+                type="button" 
+                onClick={handleGenerateDescription}
+                disabled={isGeneratingDesc}
+                className="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-full font-medium flex items-center gap-1 transition disabled:opacity-50 cursor-pointer"
+             >
+                {isGeneratingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                {isGeneratingDesc ? 'Generating AI...' : 'AI ✨ Deskripsi & Highlight'}
+             </button>
+          </div>
+          {aiError && <p className="text-red-500 text-xs mb-2">{aiError}</p>}
+          <textarea 
+            name="description" 
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4} 
+            required 
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary"
+          ></textarea>
         </div>
         
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Highlights (comma separated)</label>
-          <input type="text" name="highlights" defaultValue={initialData?.highlightsString} placeholder="Highlight 1, Highlight 2" className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" />
+          <input 
+            type="text" 
+            name="highlights" 
+            value={highlights}
+            onChange={(e) => setHighlights(e.target.value)}
+            placeholder="Highlight 1, Highlight 2" 
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" 
+          />
         </div>
       </div>
 

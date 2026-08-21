@@ -23,6 +23,10 @@ kartavia/
 │   │   ├── supabase.ts    # Supabase client setup
 │   │   └── utils.ts       # Utility functions
 │   └── types/             # TypeScript definitions
+
+## Naming Conventions
+- **Files/Components:** Use functional names instead of `index.tsx` for components (e.g. `Sidebar.tsx` instead of `Sidebar/index.tsx`). This applies to all components to make searching and maintaining the codebase easier.
+
 ├── public/                # Static assets (images, icons)
 ├── architecture.md
 ├── design.md

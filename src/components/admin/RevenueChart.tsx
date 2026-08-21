@@ -27,18 +27,6 @@ export default function RevenueChart({ data }: { data: any[] }) {
     }
   })
 
-  // Inject some dummy data if everything is 0 to make chart look good in testing
-  const hasData = monthlyData.some(d => d.revenue > 0)
-  if (!hasData) {
-    monthlyData[0].revenue = 1500000
-    monthlyData[1].revenue = 2300000
-    monthlyData[2].revenue = 3400000
-    monthlyData[3].revenue = 2800000
-    monthlyData[4].revenue = 4500000
-    monthlyData[5].revenue = 5200000
-    monthlyData[6].revenue = 4800000
-    monthlyData[7].revenue = 6100000
-  }
 
   const formatRupiah = (value: number) => {
     return new Intl.NumberFormat('id-ID', {

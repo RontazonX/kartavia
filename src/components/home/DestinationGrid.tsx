@@ -2,7 +2,8 @@
 
 import React, { useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Heart, Star, MapPin, Leaf } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import DestinationCard from "@/components/shared/DestinationCard";
 
 export default function DestinationGrid({ 
   destinations, 
@@ -73,68 +74,18 @@ export default function DestinationGrid({
       >
         {destinations.map((item) => (
           <div className="w-[280px] md:w-[320px] flex-none snap-start" key={item.id}>
-            <Link href={`/detail/${item.id}`} className="block focus-visible:outline-none">
-              <div className="group relative flex h-[360px] w-full flex-col overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-                {/* Image Section */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                  {item.image_url ? (
-                    <img
-                      alt={item.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      src={item.image_url}
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-slate-400 group-hover:scale-105 transition-transform duration-500">
-                      <span className="text-sm">No Image</span>
-                    </div>
-                  )}
-                  
-                  {/* Floating Buttons/Badges */}
-                  <button className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-600 backdrop-blur-sm transition-colors hover:bg-white hover:text-primary shadow-sm cursor-pointer" onClick={(e) => e.preventDefault()}>
-                    <Heart className="h-4 w-4" />
-                  </button>
-                  <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
-                    <span className="bg-white/90 text-primary text-xs font-bold px-2 py-1 rounded shadow-sm self-start">
-                      {item.category}
-                    </span>
-                    {item.admin_eco_score >= 4 && (
-                      <span className="bg-emerald-500/90 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm self-start flex items-center">
-                        <Leaf className="w-3 h-3 mr-1" /> Zero Waste
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Content Section */}
-                <div className="flex flex-1 flex-col justify-between p-4">
-                  <div>
-                    <h3 className="font-bold text-lg text-slate-900 tracking-tight line-clamp-1 group-hover:text-primary transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 flex items-center text-sm text-slate-500 tracking-tight">
-                      <MapPin className="mr-1 h-3.5 w-3.5" />
-                      <span className="truncate">{item.location}</span>
-                    </p>
-                  </div>
-
-                  <div className="mt-auto flex items-end justify-between pt-4">
-                    <div className="flex items-center text-sm font-medium">
-                      <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 mr-1" />
-                      <span className="text-slate-900">{item.rating}</span>
-                      <span className="text-slate-500 ml-1 font-normal">
-                        ({item.reviews_count > 0 ? item.reviews_count : 'New'})
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="block text-[10px] text-slate-500 font-medium uppercase tracking-wider">Start from</span>
-                      <span className="font-bold text-slate-900">
-                        {Number(item.price) === 0 ? 'Free' : `Rp ${Number(item.price).toLocaleString('id-ID')}`}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
+            <DestinationCard 
+              id={item.id}
+              title={item.title}
+              category={item.category}
+              location={item.location}
+              price={item.price}
+              image_url={item.image_url}
+              rating={item.rating}
+              reviews_count={item.reviews_count}
+              admin_eco_score={item.admin_eco_score}
+              description={item.description}
+            />
           </div>
         ))}
       </div>
