@@ -58,13 +58,13 @@ export default function HomepageSettingsForm({
     try {
       // 1. Save Parallax Layers
       const { error: parallaxErr } = await supabase.from('homepage_settings')
-        .upsert({ section: 'parallax_hero', data: { layers: parallaxLayers } })
+        .upsert({ section: 'parallax_hero', data: { layers: parallaxLayers } }, { onConflict: 'section' })
       
       if (parallaxErr) throw parallaxErr
 
       // 2. Save Banners
       const { error: bannersErr } = await supabase.from('homepage_settings')
-        .upsert({ section: 'banners', data: { images: banners } })
+        .upsert({ section: 'banners', data: { images: banners } }, { onConflict: 'section' })
       
       if (bannersErr) throw bannersErr
 

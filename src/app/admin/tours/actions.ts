@@ -1,11 +1,11 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { createAdminClient } from '@/utils/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
 export async function createTour(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const title = formData.get('title') as string
   const location = formData.get('location') as string
@@ -40,8 +40,8 @@ export async function createTour(formData: FormData) {
     admin_eco_score: adminEcoScore,
     partner_id: partnerId,
     highlights: JSON.stringify(highlights),
-    included_benefits: JSON.stringify(included_benefits),
-    excluded_benefits: JSON.stringify(excluded_benefits),
+    included_benefits: included_benefits,
+    excluded_benefits: excluded_benefits,
     itinerary: JSON.stringify(itinerary),
     image_url: imageUrl,
     rating: 0,
@@ -50,6 +50,7 @@ export async function createTour(formData: FormData) {
 
   if (error) {
     console.error(error)
+    throw new Error(`Failed to create tour: ${error.message}`)
   }
 
   revalidatePath('/admin/tours')
@@ -59,7 +60,7 @@ export async function createTour(formData: FormData) {
 }
 
 export async function updateTour(id: string, formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const title = formData.get('title') as string
   const location = formData.get('location') as string
@@ -94,8 +95,8 @@ export async function updateTour(id: string, formData: FormData) {
     admin_eco_score: adminEcoScore,
     partner_id: partnerId,
     highlights: JSON.stringify(highlights),
-    included_benefits: JSON.stringify(included_benefits),
-    excluded_benefits: JSON.stringify(excluded_benefits),
+    included_benefits: included_benefits,
+    excluded_benefits: excluded_benefits,
     itinerary: JSON.stringify(itinerary)
   }
   
@@ -107,6 +108,7 @@ export async function updateTour(id: string, formData: FormData) {
 
   if (error) {
     console.error(error)
+    throw new Error(`Failed to update tour: ${error.message}`)
   }
 
   revalidatePath('/admin/tours')
@@ -117,12 +119,13 @@ export async function updateTour(id: string, formData: FormData) {
 }
 
 export async function deleteTour(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   
   const { error } = await supabase.from('destinations').delete().eq('id', id)
   
   if (error) {
     console.error(error)
+    throw new Error(`Failed to delete tour: ${error.message}`)
   }
   
   revalidatePath('/admin/tours')

@@ -138,8 +138,8 @@ export default function DestinationForm({
         </div>
         
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
-          <input type="text" name="duration" defaultValue={initialData?.duration} placeholder="e.g. 2-3 hours" required className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" />
+          <label className="block text-sm font-medium text-gray-700 mb-1">Duration (Optional)</label>
+          <input type="text" name="duration" defaultValue={initialData?.duration} placeholder="e.g. 2-3 hours" className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" />
         </div>
         
         <div className="col-span-2 border border-gray-200 rounded-xl p-5 bg-gray-50">

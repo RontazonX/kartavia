@@ -18,7 +18,7 @@ export async function login(formData: FormData): Promise<{ error?: string }> {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    return { error: error.message }
+    return { error: 'email atau password salah' }
   }
 
   revalidatePath('/', 'layout')

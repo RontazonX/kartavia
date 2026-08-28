@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Search, User, Menu, LogOut } from 'lucide-react';
+import { Search, User, Menu, LogOut, Heart } from 'lucide-react';
 import { createClient } from '@/utils/supabase/server';
 import { logout } from '@/app/actions/auth';
 import { getTranslation } from '@/i18n/server';
@@ -39,14 +39,14 @@ export default async function Navbar() {
             <ThemeSwitcher />
             <LanguageSwitcher />
             
-            <Link href="/about" className="text-sm font-medium text-foreground hover:text-primary transition-colors hidden sm:block">
-              {t.navbar.about || 'About'}
-            </Link>
             <Link href="/explore" className="text-sm font-medium text-foreground hover:text-primary transition-colors hidden sm:block">
               {t.navbar.explore}
             </Link>
             <Link href="/planner" className="text-sm font-medium text-brand-500 hover:text-brand-600 transition-colors hidden sm:flex items-center gap-1">
               {t.navbar.planner} ✨
+            </Link>
+            <Link href="/about" className="text-sm font-medium text-foreground hover:text-primary transition-colors hidden sm:block">
+              {t.navbar.about || 'About'}
             </Link>
             
             {user ? (
@@ -54,23 +54,22 @@ export default async function Navbar() {
                 <Link href="/dashboard" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   {t.navbar.myBookings}
                 </Link>
-                <Link href="/dashboard/wishlist" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-                  {t.navbar.wishlist}
+                <Link href="/dashboard/wishlist" className="text-gray-600 hover:text-red-500 dark:text-gray-300 dark:hover:text-red-400 transition-colors" title="Wishlist">
+                  <Heart className="h-5 w-5" />
                 </Link>
-                <Link href="/profile" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-                  {t.navbar.profile}
-                </Link>
-                <form action={logout} className="flex items-center">
-                  <div className="flex items-center justify-center gap-2 rounded-full border border-gray-200 dark:border-slate-700 p-1 pr-3 shadow-sm bg-white dark:bg-slate-800 transition-colors">
+                <div className="flex items-center justify-center gap-2 rounded-full border border-gray-200 dark:border-slate-700 p-1 pr-3 shadow-sm bg-white dark:bg-slate-800 transition-colors">
+                  <Link href="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                     <div className="bg-gray-100 dark:bg-slate-700 rounded-full p-2 transition-colors">
                       <User className="h-4 w-4 text-gray-600 dark:text-gray-300" />
                     </div>
                     <span className="text-sm font-medium truncate max-w-[100px] text-gray-900 dark:text-gray-100">{user.user_metadata?.first_name || user.email?.split('@')[0]}</span>
-                    <button type="submit" className="ml-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer" title="Log out">
+                  </Link>
+                  <form action={logout} className="flex items-center ml-1 border-l border-gray-200 dark:border-slate-700 pl-2">
+                    <button type="submit" className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer" title="Log out">
                       <LogOut className="h-4 w-4" />
                     </button>
-                  </div>
-                </form>
+                  </form>
+                </div>
               </div>
             ) : (
               <Link href="/login" className="hidden md:flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-primary-dark text-white px-4 py-2 font-medium transition-colors shadow-sm shadow-primary/20">

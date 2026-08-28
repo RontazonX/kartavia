@@ -1,11 +1,11 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { createAdminClient } from '@/utils/supabase/admin'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
 export async function createDestination(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const title = formData.get('title') as string
   const location = formData.get('location') as string
@@ -40,6 +40,7 @@ export async function createDestination(formData: FormData) {
 
   if (error) {
     console.error(error)
+    throw new Error(`Failed to create destination: ${error.message}`)
   }
 
   revalidatePath('/admin/destinations')
@@ -49,7 +50,7 @@ export async function createDestination(formData: FormData) {
 }
 
 export async function updateDestination(id: string, formData: FormData) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const title = formData.get('title') as string
   const location = formData.get('location') as string
@@ -87,6 +88,7 @@ export async function updateDestination(id: string, formData: FormData) {
 
   if (error) {
     console.error(error)
+    throw new Error(`Failed to update destination: ${error.message}`)
   }
 
   revalidatePath('/admin/destinations')
@@ -97,13 +99,16 @@ export async function updateDestination(id: string, formData: FormData) {
 }
 
 export async function deleteDestination(id: string) {
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   
   await supabase.from('bookings').delete().eq('destination_id', id)
   await supabase.from('reviews').delete().eq('destination_id', id)
   const { error } = await supabase.from('destinations').delete().eq('id', id)
   
-  if (error) console.error(error)
+  if (error) {
+    console.error(error)
+    throw new Error(`Failed to delete destination: ${error.message}`)
+  }
   
   revalidatePath('/admin/destinations')
   revalidatePath('/explore')
