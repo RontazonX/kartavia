@@ -70,7 +70,7 @@ export default async function DashboardPage() {
                   <div className="bg-surface dark:bg-slate-900 rounded-xl p-3 flex flex-col gap-2 mb-4 mt-auto">
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
                       <Calendar className="h-4 w-4 mr-2 text-primary" />
-                      <span>{new Date(booking.booking_date).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                      <span>{new Date(booking.date).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}</span>
                     </div>
                     <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
                       <Users className="h-4 w-4 mr-2 text-primary" />

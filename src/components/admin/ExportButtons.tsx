@@ -12,7 +12,7 @@ export default function ExportButtons({ data }: { data: any[] }) {
       ...data.map(b => [
         b.user_id,
         `"${b.destinations?.title || ''}"`,
-        new Date(b.booking_date).toISOString().split('T')[0],
+        new Date(b.date).toISOString().split('T')[0],
         b.guests,
         b.total_price,
         b.status

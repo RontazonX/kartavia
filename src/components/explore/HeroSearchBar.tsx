@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { MapPin, Calendar, Users, ChevronDown } from 'lucide-react';
+import { useTranslation } from '@/i18n/client';
 
 const popularDestinations = [
   "Malioboro",
@@ -16,6 +17,7 @@ const popularDestinations = [
 
 export default function HeroSearchBar() {
   const router = useRouter();
+  const { t } = useTranslation();
   
   const [query, setQuery] = useState('');
   const [date, setDate] = useState('');
@@ -79,7 +81,7 @@ export default function HeroSearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Where to?" 
+          placeholder={t.explore.searchBar.whereTo} 
           className="w-full focus:outline-none text-gray-800 bg-transparent placeholder-gray-500 font-medium cursor-text relative z-10" 
         />
       </div>
@@ -93,50 +95,52 @@ export default function HeroSearchBar() {
           onBlur={(e) => { if (!e.target.value) e.target.type = "text" }}
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          placeholder="Select dates" 
+          placeholder={t.explore.searchBar.selectDates} 
           className="w-full focus:outline-none text-gray-800 bg-transparent placeholder-gray-500 font-medium cursor-pointer" 
         />
       </div>
 
       {/* Guests Input */}
-      <div className="flex-1 flex items-center px-6 py-4 md:py-3 w-full relative" ref={guestRef}>
-        <Users className="h-5 w-5 text-gray-400 mr-3 shrink-0" />
+      <div className="flex-1 flex flex-col justify-center px-6 py-4 md:py-3 w-full relative" ref={guestRef}>
         <div 
-          className="w-full cursor-pointer flex justify-between items-center text-gray-800 font-medium"
+          className="w-full cursor-pointer flex items-center text-gray-800 font-medium"
           onClick={() => setShowGuestDropdown(!showGuestDropdown)}
         >
-          <span>{guests} {guests === 1 ? 'Guest' : 'Guests'}</span>
-          <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${showGuestDropdown ? 'rotate-180' : ''}`} />
+          <Users className="h-5 w-5 text-gray-400 mr-3 shrink-0" />
+          <div className="w-full flex justify-between items-center">
+            <span>{guests} {guests === 1 ? t.explore.searchBar.guest : t.explore.searchBar.guests}</span>
+            <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${showGuestDropdown ? 'rotate-180' : ''}`} />
+          </div>
         </div>
         
         {/* Guest Dropdown */}
         {showGuestDropdown && (
-          <div className="absolute top-full left-0 md:right-0 md:left-auto mt-4 w-full md:w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-5 z-50">
+          <div className="mt-4 md:absolute md:top-full left-0 md:right-0 md:left-auto w-full md:w-64 bg-white rounded-2xl shadow-none md:shadow-xl border border-gray-100 p-4 md:p-5 z-50 self-start">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="font-semibold text-gray-800">Guests</p>
-                <p className="text-xs text-gray-500">Ages 2 or above</p>
+                <p className="font-semibold text-gray-800">{t.explore.searchBar.guests}</p>
+                <p className="text-xs text-gray-500">{t.explore.searchBar.ages}</p>
               </div>
               <div className="flex items-center gap-3">
                 <button 
                   type="button"
-                  onClick={() => setGuests(Math.max(1, guests - 1))}
+                  onClick={(e) => { e.stopPropagation(); setGuests(Math.max(1, guests - 1)); }}
                   className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors"
                 >-</button>
                 <span className="font-medium w-4 text-center">{guests}</span>
                 <button 
                   type="button"
-                  onClick={() => setGuests(guests + 1)}
+                  onClick={(e) => { e.stopPropagation(); setGuests(guests + 1); }}
                   className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-gray-500 hover:border-gray-800 hover:text-gray-800 transition-colors"
                 >+</button>
               </div>
             </div>
             <button 
               type="button"
-              onClick={() => setShowGuestDropdown(false)}
+              onClick={(e) => { e.stopPropagation(); setShowGuestDropdown(false); }}
               className="w-full py-2 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-800 transition-colors"
             >
-              Apply
+              {t.explore.searchBar.apply}
             </button>
           </div>
         )}
@@ -147,7 +151,7 @@ export default function HeroSearchBar() {
         type="submit"
         className="w-full md:w-auto m-2 bg-primary text-white rounded-full px-8 py-4 font-bold hover:bg-slate-100 hover:text-slate-900 transition-colors shadow-lg cursor-pointer shrink-0"
       >
-        Search
+        {t.explore.searchBar.searchBtn}
       </button>
     </form>
   );

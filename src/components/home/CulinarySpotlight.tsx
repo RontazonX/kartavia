@@ -1,53 +1,56 @@
 'use client';
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Heart, Star, MapPin } from 'lucide-react';
-
-const culinaryData = [
-  {
-    id: 1,
-    name: 'Gudeg Yu Djum',
-    location: 'Wijilan, Yogyakarta',
-    description: 'The legendary sweet jackfruit stew, slowly cooked for hours in traditional clay pots.',
-    image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&q=80&w=800',
-    tags: ['Legendary', 'Sweet']
-  },
-  {
-    id: 2,
-    name: 'Sate Klatak Pak Pong',
-    location: 'Bantul, Yogyakarta',
-    description: 'Unique mutton satay grilled on bicycle spokes for perfectly even cooking.',
-    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=800',
-    tags: ['Savory', 'Mutton']
-  },
-  {
-    id: 3,
-    name: 'Kopi Jos Lik Man',
-    location: 'Malioboro Street',
-    description: 'Hot black coffee served with a piece of burning charcoal dunked right into the glass.',
-    image: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&q=80&w=800',
-    tags: ['Coffee', 'Unique']
-  },
-  {
-    id: 4,
-    name: 'Bakpia Pathok 25',
-    location: 'Pathok, Yogyakarta',
-    description: 'Warm, freshly baked sweet rolls filled with mung bean paste. A must-buy souvenir.',
-    image: 'https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&q=80&w=800',
-    tags: ['Dessert', 'Souvenir']
-  },
-  {
-    id: 5,
-    name: 'Oseng Mercon Bu Narti',
-    location: 'Ngampilan, Yogyakarta',
-    description: 'Explosively spicy beef stir-fry that will challenge your taste buds.',
-    image: 'https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?auto=format&fit=crop&q=80&w=800',
-    tags: ['Spicy', 'Dinner']
-  }
-];
+import { useTranslation } from '@/i18n/client';
 
 export default function CulinarySpotlight() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
+
+  const culinaryData = [
+    {
+      id: 1,
+      name: 'Gudeg Yu Djum',
+      location: 'Wijilan, Yogyakarta',
+      description: t.home.culinary.gudeg_desc,
+      image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&q=80&w=800',
+      tags: ['Legendary', 'Sweet']
+    },
+    {
+      id: 2,
+      name: 'Sate Klatak Pak Pong',
+      location: 'Bantul, Yogyakarta',
+      description: t.home.culinary.sate_desc,
+      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=800',
+      tags: ['Savory', 'Mutton']
+    },
+    {
+      id: 3,
+      name: 'Kopi Jos Lik Man',
+      location: 'Malioboro Street',
+      description: t.home.culinary.kopi_desc,
+      image: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&q=80&w=800',
+      tags: ['Coffee', 'Unique']
+    },
+    {
+      id: 4,
+      name: 'Bakpia Pathok 25',
+      location: 'Pathok, Yogyakarta',
+      description: t.home.culinary.bakpia_desc,
+      image: 'https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&q=80&w=800',
+      tags: ['Dessert', 'Souvenir']
+    },
+    {
+      id: 5,
+      name: 'Oseng Mercon Bu Narti',
+      location: 'Ngampilan, Yogyakarta',
+      description: t.home.culinary.oseng_desc,
+      image: 'https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?auto=format&fit=crop&q=80&w=800',
+      tags: ['Spicy', 'Dinner']
+    }
+  ];
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -67,8 +70,8 @@ export default function CulinarySpotlight() {
         <div className="w-full">
           <div className="mb-6 flex items-end justify-between">
             <div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-2">Rekomendasi Kuliner</h2>
-              <p className="text-slate-600">Sempurnakan perjalanan Anda dengan cita rasa lokal terbaik.</p>
+              <h2 className="text-3xl font-bold text-slate-900 mb-2">{t.home.culinaryTitle}</h2>
+              <p className="text-slate-600">{t.home.culinarySubtitle}</p>
             </div>
             
             <div className="flex items-center gap-2 mb-1">
@@ -102,14 +105,17 @@ export default function CulinarySpotlight() {
                 <div className="group relative flex h-[360px] w-full flex-col overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer">
                   {/* Image Section */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                    <img 
+                    <Image 
                       src={item.image} 
                       alt={item.name} 
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      fill
+                      sizes="320px"
+                      loading="lazy"
                     />
                     
                     {/* Floating Buttons/Badges */}
-                    <button className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-600 backdrop-blur-sm transition-colors hover:bg-white hover:text-primary shadow-sm cursor-pointer" onClick={(e) => e.preventDefault()}>
+                    <button className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-600  transition-colors hover:bg-white hover:text-primary shadow-sm cursor-pointer" onClick={(e) => e.preventDefault()}>
                       <Heart className="h-4 w-4" />
                     </button>
                     {item.tags[0] && (
@@ -141,7 +147,7 @@ export default function CulinarySpotlight() {
                         <span className="text-slate-500 ml-1 font-normal">(120)</span>
                       </div>
                       <div className="text-right flex items-center text-primary font-medium text-sm hover:underline">
-                        Lihat Detail
+                        {t.explore.viewDetail}
                       </div>
                     </div>
                   </div>

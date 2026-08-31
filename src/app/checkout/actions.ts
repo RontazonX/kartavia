@@ -4,12 +4,12 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
-export async function processPayment(formData: FormData): Promise<void> {
+export async function processPayment(prevState: any, formData: FormData): Promise<{ success: boolean; bookingId?: string; method?: string; error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/login')
+    return { success: false, error: 'User not authenticated' }
   }
 
   const destinationId = formData.get('destination_id') as string
@@ -19,7 +19,7 @@ export async function processPayment(formData: FormData): Promise<void> {
   const paymentMethod = formData.get('payment_method') as string
 
   if (!destinationId || !bookingDate || !guests || isNaN(totalPrice) || !paymentMethod) {
-    throw new Error('Invalid booking data')
+    return { success: false, error: 'Invalid booking data' }
   }
 
   const { data, error } = await supabase
@@ -27,7 +27,7 @@ export async function processPayment(formData: FormData): Promise<void> {
     .insert({
       user_id: user.id,
       destination_id: destinationId,
-      booking_date: bookingDate,
+      date: bookingDate,
       guests,
       total_price: totalPrice,
       status: 'pending'
@@ -36,12 +36,10 @@ export async function processPayment(formData: FormData): Promise<void> {
     .single()
 
   if (error) {
-    throw new Error(error.message)
+    return { success: false, error: error.message }
   }
 
-  revalidatePath('/dashboard')
-  revalidatePath('/admin/bookings')
-  redirect(`/checkout/pay/${data.id}`)
+  return { success: true, bookingId: data.id, method: paymentMethod }
 }
 
 export async function confirmPayment(bookingId: string) {

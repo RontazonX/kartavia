@@ -3,36 +3,38 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
-
-const promos = [
-  {
-    id: 1,
-    title: "Special Summer Sale!",
-    description: "Get up to 30% off on all Merapi Jeep Tours.",
-    image: "https://images.unsplash.com/photo-1600804340584-c7db2eacf0bf?q=80&w=800&auto=format&fit=crop",
-    code: "MERAPI30",
-    color: "from-orange-500 to-red-500"
-  },
-  {
-    id: 2,
-    title: "Cultural Heritage Tour",
-    description: "Free guide for Prambanan & Borobudur combo.",
-    image: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=800&auto=format&fit=crop",
-    code: "CULTUREFREE",
-    color: "from-blue-500 to-indigo-600"
-  },
-  {
-    id: 3,
-    title: "Weekend Getaway",
-    description: "Extra 15% discount for weekend car rentals.",
-    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop",
-    code: "WKND15",
-    color: "from-emerald-500 to-teal-600"
-  }
-];
+import { useTranslation } from '@/i18n/client';
 
 export default function PromoSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { t } = useTranslation();
+
+  const promos = [
+    {
+      id: 1,
+      title: t.home.promos.p1_title,
+      description: t.home.promos.p1_desc,
+      image: "https://images.unsplash.com/photo-1600804340584-c7db2eacf0bf?q=80&w=800&auto=format&fit=crop",
+      code: "MERAPI30",
+      color: "from-orange-500 to-red-500"
+    },
+    {
+      id: 2,
+      title: t.home.promos.p2_title,
+      description: t.home.promos.p2_desc,
+      image: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?q=80&w=800&auto=format&fit=crop",
+      code: "CULTUREFREE",
+      color: "from-blue-500 to-indigo-600"
+    },
+    {
+      id: 3,
+      title: t.home.promos.p3_title,
+      description: t.home.promos.p3_desc,
+      image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=800&auto=format&fit=crop",
+      code: "WKND15",
+      color: "from-emerald-500 to-teal-600"
+    }
+  ];
 
   // Auto-play
   useEffect(() => {
@@ -73,8 +75,8 @@ export default function PromoSlider() {
               <h3 className="text-xl sm:text-3xl font-bold mb-2">{promo.title}</h3>
               <p className="text-sm sm:text-lg text-white/90 mb-4 max-w-lg">{promo.description}</p>
               <div>
-                <span className="inline-block bg-white/20 backdrop-blur-md border border-white/30 text-white px-4 py-1.5 rounded-full text-sm font-mono font-bold tracking-wider">
-                  Code: {promo.code}
+                <span className="inline-block bg-white  border border-white/30 text-white px-4 py-1.5 rounded-full text-sm font-mono font-bold tracking-wider">
+                  {t.home.promoCode}: {promo.code}
                 </span>
               </div>
             </div>
@@ -84,13 +86,13 @@ export default function PromoSlider() {
         {/* Navigation Buttons */}
         <button 
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/20 hover:bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-sm"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer "
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
         <button 
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/20 hover:bg-black/40 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-sm"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer "
         >
           <ChevronRight className="h-6 w-6" />
         </button>

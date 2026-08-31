@@ -10,8 +10,7 @@ export default async function WasteReportsPage() {
     .from('waste_reports')
     .select(`
       *,
-      destinations (title, location),
-      users:auth.users (email)
+      destinations (title, location)
     `)
     .order('created_at', { ascending: false })
 

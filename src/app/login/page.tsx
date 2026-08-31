@@ -2,8 +2,8 @@ import SignInForm from './SignInForm'
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-surface flex flex-col items-center justify-center py-10 px-4">
-      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 flex overflow-hidden w-full max-w-6xl min-h-[600px]">
+    <div className="min-h-screen bg-surface flex flex-col items-center py-12 px-4 md:justify-center">
+      <div className="bg-white rounded-3xl shadow-xl border border-gray-100 flex overflow-hidden w-full max-w-6xl mt-8 md:mt-0 min-h-[500px] md:min-h-[600px]">
         <SignInForm />
         
         {/* Right side banner */}

@@ -20,3 +20,12 @@ FOREIGN KEY (partner_id)
 REFERENCES public.partners(id);
 
 
+
+-- Fix missing time_slot in bookings table
+ALTER TABLE public.bookings ADD COLUMN IF NOT EXISTS time_slot text;
+
+-- Fix missing guests in bookings table
+ALTER TABLE public.bookings ADD COLUMN IF NOT EXISTS guests integer DEFAULT 1;
+
+-- Comprehensive fix for bookings table
+ALTER TABLE public.bookings ADD COLUMN IF NOT EXISTS time_slot text, ADD COLUMN IF NOT EXISTS guests integer DEFAULT 1, ADD COLUMN IF NOT EXISTS booking_date date, ADD COLUMN IF NOT EXISTS total_price numeric, ADD COLUMN IF NOT EXISTS status text DEFAULT 'pending';

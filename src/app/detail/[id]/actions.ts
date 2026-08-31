@@ -26,7 +26,7 @@ export async function submitBooking(formData: FormData) {
     .insert({
       user_id: user.id,
       destination_id: destinationId,
-      booking_date: bookingDate,
+      date: bookingDate,
       guests,
       total_price: totalPrice,
       status: 'confirmed'

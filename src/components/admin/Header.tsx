@@ -3,7 +3,6 @@
 import Link from "next/link";
 import DropdownUser from "@/components/admin/DropdownUser";
 import { Search, Bell, MessageSquare, Menu } from "lucide-react";
-import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 
 interface HeaderProps {
   sidebarOpen: string | boolean | undefined;
@@ -56,11 +55,7 @@ const Header = (props: HeaderProps) => {
 
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
-            {/* Theme Toggle */}
-            <li>
-               <ThemeSwitcher />
-            </li>
-            
+
             {/* Notifications */}
             <li className="relative">
                <button className="relative flex h-8.5 w-8.5 items-center justify-center rounded-full border border-slate-200 bg-slate-50 hover:text-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white cursor-pointer transition">

@@ -160,7 +160,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <button
                   onClick={() => toggleMenu("master")}
                   className={`group relative flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 font-medium duration-300 ease-in-out ${
-                    expandedMenu === "master" || pathname.includes("destinations") || pathname.includes("tours") || pathname.includes("partners")
+                    expandedMenu === "master" || pathname.includes("destinations") || pathname.includes("guides") || pathname.includes("tours") || pathname.includes("partners")
                       ? "bg-primary/10 text-primary" 
                       : "bg-slate-50 text-slate-600 hover:bg-slate-100 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-800"
                   }`}
@@ -177,6 +177,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <li>
                       <Link href="/admin/destinations" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("destinations") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Destinasi Wisata
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/admin/guides" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("guides") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                        Tour Guides
                       </Link>
                     </li>
                     <li>

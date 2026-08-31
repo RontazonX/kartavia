@@ -9,7 +9,7 @@ interface Booking {
   status: string
   guests: number
   total_price: number
-  booking_date: string
+  date: string
   destinations: { title: string }
   user_id: string
 }
@@ -108,7 +108,7 @@ export default function KanbanBoard({ initialBookings }: { initialBookings: Book
                 <div className="space-y-2 text-sm text-gray-600">
                   <div className="flex justify-between">
                     <span>Date:</span>
-                    <span className="font-medium text-gray-900">{new Date(booking.booking_date).toLocaleDateString()}</span>
+                    <span className="font-medium text-gray-900">{new Date(booking.date).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Guests:</span>

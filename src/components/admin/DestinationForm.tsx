@@ -94,7 +94,6 @@ export default function DestinationForm({
 
   return (
     <form action={action} className="space-y-6">
-      <input type="hidden" name="category" value="Attraction" />
       <div className="grid grid-cols-2 gap-6">
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -110,10 +109,32 @@ export default function DestinationForm({
         
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-          <input type="text" name="location" defaultValue={initialData?.location} required className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" />
+          <input 
+            type="text" 
+            name="location" 
+            defaultValue={initialData?.location} 
+            placeholder="Contoh: Jl. Malioboro, Kota Yogyakarta (Sertakan Sleman/Bantul/Gunungkidul dll)"
+            required 
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" 
+          />
+          <p className="text-xs text-gray-500 mt-1">Filter wilayah (Sleman, Bantul, Gunungkidul, dll) otomatis diambil dari teks lokasi ini.</p>
         </div>
 
-
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <select 
+            name="category" 
+            defaultValue={initialData?.category || 'Attraction'} 
+            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary bg-white"
+          >
+            <option value="Attraction">Attraction</option>
+            <option value="Tour">Tour Package</option>
+            <option value="Culinary">Culinary</option>
+            <option value="Accommodation">Accommodation</option>
+            <option value="Nature">Nature</option>
+            <option value="Culture">Culture</option>
+          </select>
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Price (Rp)</label>

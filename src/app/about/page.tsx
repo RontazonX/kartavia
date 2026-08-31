@@ -1,6 +1,16 @@
 import { ShieldCheck, Map, Sparkles, Clock, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { getTranslation } from '@/i18n/server';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Tentang Kartavia - Platform Wisata Yogyakarta',
+  description: 'Kartavia adalah platform pariwisata yang menghubungkan wisatawan dengan destinasi terbaik di Yogyakarta. Pemandu lokal berpengalaman, AI Planner, dan pemesanan aman.',
+  openGraph: {
+    title: 'Tentang Kartavia - Platform Wisata Yogyakarta',
+    description: 'Kartavia adalah platform pariwisata yang menghubungkan wisatawan dengan destinasi terbaik di Yogyakarta.',
+  },
+};
 
 export default async function AboutPage() {
   const t = await getTranslation();

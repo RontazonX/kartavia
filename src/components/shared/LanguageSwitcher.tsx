@@ -1,23 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { Globe } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useTranslation } from '@/i18n/client'
 
 export default function LanguageSwitcher() {
-  const [lang, setLang] = useState('en')
-
-  useEffect(() => {
-    const match = document.cookie.match(new RegExp('(^| )NEXT_LOCALE=([^;]+)'))
-    if (match && match[2] === 'id') {
-      setLang('id')
-    }
-  }, [])
+  const { lang, setLang } = useTranslation()
+  const router = useRouter()
 
   const toggleLanguage = () => {
     const newLang = lang === 'en' ? 'id' : 'en'
     setLang(newLang)
-    document.cookie = `NEXT_LOCALE=${newLang}; path=/; max-age=31536000` // 1 year expiry
-    window.location.reload()
+    router.refresh()
   }
 
   return (

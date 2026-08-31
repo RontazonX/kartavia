@@ -1,13 +1,15 @@
 'use client'
 
 import { Filter, Star } from 'lucide-react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useState, useEffect } from 'react'
 import { useDebounce } from '@/hooks/useDebounce'
+import { useTranslation } from '@/i18n/client'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function FilterSidebar() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { t } = useTranslation()
   
   const currentCategory = searchParams.get('category') || ''
   const currentMinPrice = searchParams.get('min_price') || ''
@@ -53,14 +55,14 @@ export default function FilterSidebar() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2 text-foreground dark:text-white font-semibold">
           <Filter className="h-5 w-5" />
-          <span>Filters</span>
+          <span>{t.explore.sidebar.filters}</span>
         </div>
-        {(currentCategory || currentMinPrice || currentMaxPrice || currentRating || searchParams.get('eco')) && (
+        {(currentCategory || currentMinPrice || currentMaxPrice || currentRating || searchParams.get('eco') || searchParams.get('region')) && (
            <button 
              onClick={() => router.push('/explore')}
              className="text-xs text-primary hover:underline font-medium"
            >
-             Clear All
+             {t.explore.sidebar.clearAll}
            </button>
         )}
       </div>
@@ -74,25 +76,46 @@ export default function FilterSidebar() {
             onChange={(e) => updateUrl('eco', e.target.checked ? '1' : '')}
             className="w-5 h-5 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 bg-white"
           />
-          <span className="text-emerald-800 dark:text-emerald-300 font-semibold text-sm">Hanya Tampilkan Tempat Ramah Lingkungan 🍃</span>
+          <span className="text-emerald-800 dark:text-emerald-300 font-semibold text-sm">{t.explore.sidebar.ecoFriendly}</span>
         </label>
       </div>
       
       {/* Categories */}
       <div className="mb-8">
-        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">Categories</h3>
+        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">{t.explore.sidebar.categories}</h3>
         <div className="space-y-3">
-          {['', 'Attraction', 'Tour', 'Rental'].map((cat) => (
-            <label key={cat} className="flex items-center gap-3 cursor-pointer group">
+          {[{val: '', label: t.explore.sidebar.allDestinations}, {val: 'Attraction', label: t.explore.sidebar.attraction}, {val: 'Tour', label: t.explore.sidebar.tour}, {val: 'Rental', label: t.explore.sidebar.rental}].map((cat) => (
+            <label key={cat.val} className="flex items-center gap-3 cursor-pointer group">
               <input 
                 type="radio" 
                 name="category"
                 className="w-4 h-4 rounded-full text-primary focus:ring-primary border-gray-300" 
-                checked={currentCategory === cat}
-                onChange={() => updateUrl('category', cat)}
+                checked={currentCategory === cat.val}
+                onChange={() => updateUrl('category', cat.val)}
               />
-              <span className={`text-sm ${currentCategory === cat ? 'text-primary font-medium' : 'text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors'}`}>
-                {cat === '' ? 'All Destinations' : cat}
+              <span className={`text-sm ${currentCategory === cat.val ? 'text-primary font-medium' : 'text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors'}`}>
+                {cat.label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Region */}
+      <div className="mb-8">
+        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">{t.explore.sidebar.region}</h3>
+        <div className="space-y-3">
+          {['', 'Bantul', 'Sleman', 'Kota Yogyakarta', 'Gunungkidul', 'Kulon Progo'].map((region) => (
+            <label key={region} className="flex items-center gap-3 cursor-pointer group">
+              <input 
+                type="radio" 
+                name="region"
+                className="w-4 h-4 rounded-full text-primary focus:ring-primary border-gray-300" 
+                checked={(searchParams.get('region') || '') === region}
+                onChange={() => updateUrl('region', region)}
+              />
+              <span className={`text-sm ${(searchParams.get('region') || '') === region ? 'text-primary font-medium' : 'text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors'}`}>
+                {region === '' ? t.explore.sidebar.allRegions : region}
               </span>
             </label>
           ))}
@@ -101,13 +124,13 @@ export default function FilterSidebar() {
 
       {/* Price Range */}
       <div className="mb-8">
-        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">Price Range (Rp)</h3>
+        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">{t.explore.sidebar.priceRange}</h3>
         <div className="flex items-center gap-2">
           <input 
             type="number"
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
-            placeholder="Min"
+            placeholder={t.explore.sidebar.min}
             className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white"
           />
           <span className="text-gray-400">-</span>
@@ -115,7 +138,7 @@ export default function FilterSidebar() {
             type="number"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
-            placeholder="Max"
+            placeholder={t.explore.sidebar.max}
             className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:text-white"
           />
         </div>
@@ -123,7 +146,7 @@ export default function FilterSidebar() {
 
       {/* Rating */}
       <div>
-        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">Minimum Rating</h3>
+        <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-4">{t.explore.sidebar.minRating}</h3>
         <div className="space-y-3">
           {[4.5, 4.0, 3.0].map((rating) => (
             <label key={rating} className="flex items-center gap-3 cursor-pointer group">

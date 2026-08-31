@@ -7,20 +7,20 @@ export async function getBookedSlots(destinationId: string, date: string) {
   
   const { data: bookings, error } = await supabase
     .from('bookings')
-    .select('time_slot, guests')
+    .select('guests')
     .eq('destination_id', destinationId)
-    .eq('booking_date', date)
+    .eq('date', date)
 
   if (error) {
     console.error('Error fetching bookings:', error.message || error)
     return {}
   }
 
-  // Aggregate guests by time_slot
-  const bookedCounts: Record<string, number> = {}
+  // Aggregate all guests for the date
+  let totalBooked = 0
   bookings.forEach(b => {
-    bookedCounts[b.time_slot] = (bookedCounts[b.time_slot] || 0) + b.guests
+    totalBooked += b.guests
   })
 
-  return bookedCounts
+  return totalBooked
 }

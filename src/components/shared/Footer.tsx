@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { MapPin } from 'lucide-react';
 import { getTranslation } from '@/i18n/server';
 
@@ -9,8 +10,14 @@ export default async function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div className="col-span-1 md:col-span-1">
-            <Link href="/" className="text-2xl font-bold text-primary tracking-tight mb-4 block">
-              Kartavia
+            <Link href="/" className="mb-6 block">
+              <Image
+                src="/kartavia-logo.png"
+                alt="Kartavia Logo"
+                width={140}
+                height={32}
+                className="h-8 w-auto object-contain"
+              />
             </Link>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
               {t.footer.description}
@@ -24,39 +31,39 @@ export default async function Footer() {
           </div>
           
           <div>
-            <h3 className="text-sm font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">Explore</h3>
+            <h3 className="text-sm font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">{t.footer.explore}</h3>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Destinations</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Tour Packages</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Attraction Tickets</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Car Rentals</Link></li>
+              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.destinations}</Link></li>
+              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.tourPackages}</Link></li>
+              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.attractionTickets}</Link></li>
+              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.carRentals}</Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="text-sm font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">{t.footer.contactUs}</h3>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Help Center</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Terms of Service</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">Contact Us</Link></li>
+              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.helpCenter}</Link></li>
+              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.privacyPolicy}</Link></li>
+              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.termsOfService}</Link></li>
+              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.contactUs}</Link></li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-sm font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">Newsletter</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Subscribe for the latest Jogja travel updates and promos.</p>
+            <h3 className="text-sm font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">{t.footer.newsletter}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t.footer.subscribeDesc}</p>
             <form className="flex">
               <input 
                 type="email" 
-                placeholder="Enter your email" 
+                placeholder={t.footer.emailPlaceholder}
                 className="min-w-0 flex-1 appearance-none rounded-l-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2 text-base text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               />
               <button 
                 type="submit" 
                 className="flex w-auto flex-shrink-0 items-center justify-center rounded-r-lg border border-transparent bg-primary px-4 py-2 text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:text-sm transition-colors cursor-pointer"
               >
-                Subscribe
+                {t.footer.subscribe}
               </button>
             </form>
           </div>
@@ -66,9 +73,6 @@ export default async function Footer() {
           <p className="text-sm text-gray-400 dark:text-gray-500">
             &copy; {new Date().getFullYear()} Kartavia. {t.footer.rights}
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <span className="text-sm text-gray-400 dark:text-gray-500">IDR (Rp)</span>
-          </div>
         </div>
       </div>
     </footer>

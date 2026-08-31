@@ -174,7 +174,7 @@ export default async function AdminDashboard() {
                 </div>
 
                 <div className="flex items-center justify-center p-4">
-                  <p className="text-black dark:text-white">{new Date(booking.booking_date).toLocaleDateString()}</p>
+                  <p className="text-black dark:text-white">{new Date(booking.date).toLocaleDateString()}</p>
                 </div>
 
                 <div className="flex items-center justify-center p-4">

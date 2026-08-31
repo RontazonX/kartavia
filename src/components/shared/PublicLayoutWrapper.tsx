@@ -3,6 +3,9 @@
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+import { ChevronLeft } from 'lucide-react';
+import Link from 'next/link';
+
 export default function PublicLayoutWrapper({ 
   children, 
   Navbar, 
@@ -38,19 +41,18 @@ export default function PublicLayoutWrapper({
 
   return (
     <>
-      {!isAdmin && (
-        <div 
-          className={`
-            ${isHome ? 'fixed' : 'sticky'} 
-            top-0 left-0 w-full z-[100] 
-            transition-transform duration-300 ease-in-out
-            ${isHome && !isScrolled ? '-translate-y-full' : 'translate-y-0'}
-          `}
-        >
-          {Navbar}
-        </div>
-      )}
-      <main className="flex-grow">{children}</main>
+      {!isAdmin && Navbar}
+      <main className={`flex-grow pb-16 md:pb-0 ${!isHome && !isAdmin ? 'pt-16' : ''}`}>
+        {!isHome && !isAdmin && !pathname?.startsWith('/detail') && !pathname?.startsWith('/login') && !pathname?.startsWith('/register') && !pathname?.startsWith('/explore') && (
+          <div className="hidden md:block w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <Link href="/" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+              <ChevronLeft className="w-4 h-4 mr-1" />
+              Back to Home
+            </Link>
+          </div>
+        )}
+        {children}
+      </main>
       {!isAdmin && Footer}
       {!isAdmin && ChatWidget}
     </>

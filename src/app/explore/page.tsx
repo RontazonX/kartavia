@@ -1,10 +1,22 @@
 import Link from 'next/link';
+import { ChevronLeft } from 'lucide-react';
 import { createClient } from "@/utils/supabase/server";
 import FilterSidebar from '@/components/explore/FilterSidebar';
 import DestinationCard from '@/components/shared/DestinationCard';
+import { getBookedSlots } from '@/components/booking/actions';
 import { getTranslation } from '@/i18n/server';
+import type { Metadata } from 'next';
 
-export default async function ExplorePage(props: { searchParams: Promise<{ q?: string; category?: string; min_price?: string; max_price?: string; rating?: string; eco?: string }> }) {
+export const metadata: Metadata = {
+  title: 'Jelajahi Destinasi Wisata Yogyakarta - Kartavia',
+  description: 'Temukan destinasi wisata terbaik di Yogyakarta. Filter berdasarkan kategori, harga, rating, dan skor ekologi untuk menemukan tempat wisata impian Anda.',
+  openGraph: {
+    title: 'Jelajahi Destinasi Wisata Yogyakarta - Kartavia',
+    description: 'Temukan destinasi wisata terbaik di Yogyakarta.',
+  },
+};
+
+export default async function ExplorePage(props: { searchParams: Promise<{ q?: string; category?: string; min_price?: string; max_price?: string; rating?: string; eco?: string; region?: string }> }) {
   const searchParams = await props.searchParams;
   const q = searchParams?.q || '';
   const category = searchParams?.category || '';
@@ -12,6 +24,7 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
   const maxPrice = searchParams?.max_price || '';
   const rating = searchParams?.rating || '';
   const eco = searchParams?.eco || '';
+  const region = searchParams?.region || '';
 
   const supabase = await createClient();
   const t = await getTranslation();
@@ -28,6 +41,10 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
   
   if (category) {
     query = query.eq('category', category);
+  }
+
+  if (region) {
+    query = query.ilike('location', `%${region}%`);
   }
 
   if (minPrice && !isNaN(Number(minPrice))) {
@@ -47,17 +64,39 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
   }
 
   const { data: destinationsResult } = await query;
-  const destinations = destinationsResult || [];
+  let destinations = destinationsResult || [];
+
+  const today = new Date().toLocaleDateString('en-CA');
+  destinations = await Promise.all(destinations.map(async (dest: any) => {
+    const bookedCount = await getBookedSlots(dest.id, today) as number;
+    const maxCapacity = dest.max_capacity || 100;
+    const densityPercentage = maxCapacity > 0 ? (bookedCount / maxCapacity) * 100 : 0;
+    let crowdLevel = 'Low';
+    if (densityPercentage >= 90) crowdLevel = 'High';
+    else if (densityPercentage >= 60) crowdLevel = 'Medium';
+    
+    const charSum = (dest.title || '').split('').reduce((a: number, c: string) => a + c.charCodeAt(0), 0);
+    const weather = ['Sunny', 'Cloudy', 'Rainy'][charSum % 3] as 'Sunny' | 'Cloudy' | 'Rainy';
+
+    return {
+      ...dest,
+      mockCondition: { crowdLevel, weather, isOpen: true }
+    };
+  }));
 
   return (
     <div className="bg-surface dark:bg-slate-900 min-h-screen py-10 transition-colors">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="inline-flex items-center text-sm font-medium text-red-500 hover:text-red-600 mb-2 transition-colors">
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          {t.explore.backToHome}
+        </Link>
         <div className="flex justify-between items-end mb-8">
           <h1 className="text-3xl font-bold text-foreground dark:text-slate-50">
-            {q ? `Search results for "${q}"` : t.explore.title}
+            {q ? t.explore.searchResults.replace('{q}', q) : t.explore.title}
           </h1>
           {destinations.length > 0 && (
-            <span className="text-gray-500 dark:text-gray-400">{destinations.length} found</span>
+            <span className="text-gray-500 dark:text-gray-400">{destinations.length} {t.explore.found}</span>
           )}
         </div>
         
@@ -71,9 +110,9 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
           <div className="flex-1">
             {destinations.length === 0 ? (
                <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center transition-colors">
-                 <h2 className="text-xl font-semibold mb-2 dark:text-slate-100">No results found</h2>
-                 <p className="text-gray-500 dark:text-gray-400 mb-6">Try adjusting your filters or search term.</p>
-                 <Link href="/explore" className="text-primary hover:underline font-medium">Clear all filters</Link>
+                 <h2 className="text-xl font-semibold mb-2 dark:text-slate-100">{t.explore.noResultsTitle}</h2>
+                 <p className="text-gray-500 dark:text-gray-400 mb-6">{t.explore.noResultsDesc}</p>
+                 <Link href="/explore" className="text-primary hover:underline font-medium">{t.explore.clearAllFilters}</Link>
                </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -90,6 +129,7 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
                       reviews_count={item.reviews_count}
                       admin_eco_score={item.admin_eco_score}
                       description={item.description}
+                      mockCondition={item.mockCondition}
                     />
                   </div>
                 ))}

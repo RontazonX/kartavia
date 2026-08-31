@@ -3,8 +3,10 @@
 import { useState, useRef } from 'react'
 import { Camera, Upload, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react'
 import { submitWasteReport } from '@/app/actions/waste'
+import { useTranslation } from '@/i18n/client'
 
 export default function WasteReportForm({ destinationId, isLoggedIn }: { destinationId: string, isLoggedIn: boolean }) {
+  const { t } = useTranslation()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
@@ -17,12 +19,12 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
         <div className="mx-auto w-12 h-12 bg-gray-200 dark:bg-slate-700 rounded-full flex items-center justify-center mb-3">
           <Camera className="w-5 h-5 text-gray-400" />
         </div>
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Citizen Waste Reporting</h3>
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{t.explore.wasteReport.title}</h3>
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
-          Bantu kami menjaga kebersihan tempat ini. Silakan login untuk melaporkan kondisi sampah atau fasilitas yang kotor.
+          {t.explore.wasteReport.loginPrompt}
         </p>
         <a href={`/login?redirect=/detail/${destinationId}`} className="inline-block bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-lg font-medium transition-colors text-sm">
-          Login untuk Melapor
+          {t.explore.wasteReport.loginBtn}
         </a>
       </div>
     )
@@ -34,15 +36,15 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
         <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mb-4">
           <CheckCircle2 className="w-8 h-8 text-green-600 dark:text-green-400" />
         </div>
-        <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-2">Laporan Terkirim!</h3>
+        <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-2">{t.explore.wasteReport.successTitle}</h3>
         <p className="text-green-700 dark:text-green-400 text-sm max-w-md mx-auto">
-          Terima kasih atas kepedulian Anda. Laporan Anda telah diteruskan ke pihak pengelola untuk segera ditindaklanjuti.
+          {t.explore.wasteReport.successDesc}
         </p>
         <button 
           onClick={() => { setSuccess(false); setPreview(null); }}
           className="mt-6 text-sm font-semibold text-green-700 dark:text-green-400 hover:underline"
         >
-          Kirim Laporan Lain
+          {t.explore.wasteReport.sendAnother}
         </button>
       </div>
     )
@@ -52,7 +54,7 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
     const file = e.target.files?.[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setErrorMsg('Ukuran file maksimal 5MB')
+        setErrorMsg(t.explore.wasteReport.errorSize)
         return
       }
       const url = URL.createObjectURL(file)
@@ -66,18 +68,22 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
     setErrorMsg('')
     setIsSubmitting(true)
     
-    const formData = new FormData(e.currentTarget)
-    formData.append('destination_id', destinationId)
-    
-    const res = await submitWasteReport(formData)
-    
-    if (res.error) {
-      setErrorMsg(res.error)
-    } else {
-      setSuccess(true)
+    try {
+      const formData = new FormData(e.currentTarget)
+      formData.append('destination_id', destinationId)
+      
+      const res = await submitWasteReport(formData)
+      
+      if (res.error) {
+        setErrorMsg(res.error)
+      } else {
+        setSuccess(true)
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || t.explore.wasteReport.errorGeneric)
+    } finally {
+      setIsSubmitting(false)
     }
-    
-    setIsSubmitting(false)
   }
 
   return (
@@ -87,8 +93,8 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
           <Camera className="w-5 h-5 text-blue-600 dark:text-blue-400" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Citizen Waste Reporting</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Laporkan fasilitas kotor atau sampah berserakan</p>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t.explore.wasteReport.title}</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t.explore.wasteReport.subtitle}</p>
         </div>
       </div>
 
@@ -101,7 +107,7 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Foto Kondisi Terkini</label>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{t.explore.wasteReport.photoLabel}</label>
           <div 
             onClick={() => fileInputRef.current?.click()}
             className={`w-full aspect-video md:aspect-[21/9] rounded-xl border-2 border-dashed ${preview ? 'border-transparent' : 'border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800'} relative overflow-hidden group cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800/80 transition-colors flex flex-col items-center justify-center`}
@@ -110,8 +116,8 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
               <>
                 <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <span className="text-white font-medium text-sm flex items-center bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm">
-                    <Camera className="w-4 h-4 mr-2" /> Ganti Foto
+                  <span className="text-white font-medium text-sm flex items-center bg-black/60 px-4 py-2 rounded-full ">
+                    <Camera className="w-4 h-4 mr-2" /> {t.explore.wasteReport.changePhoto}
                   </span>
                 </div>
               </>
@@ -120,8 +126,8 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
                 <div className="w-12 h-12 bg-white dark:bg-slate-700 rounded-full shadow-sm flex items-center justify-center mx-auto mb-3">
                   <Upload className="w-5 h-5 text-slate-400" />
                 </div>
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Tap untuk mengunggah foto</p>
-                <p className="text-xs text-slate-500 mt-1">JPG, PNG (Maks 5MB)</p>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{t.explore.wasteReport.uploadPrompt}</p>
+                <p className="text-xs text-slate-500 mt-1">{t.explore.wasteReport.uploadSize}</p>
               </div>
             )}
             <input 
@@ -138,11 +144,11 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Deskripsi Laporan</label>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">{t.explore.wasteReport.descLabel}</label>
           <textarea 
             name="description" 
             rows={3} 
-            placeholder="Misal: Tempat sampah di area toilet umum sudah penuh dan berserakan..." 
+            placeholder={t.explore.wasteReport.descPlaceholder}
             className="w-full border border-gray-300 dark:border-slate-700 rounded-xl p-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-slate-800 dark:text-white transition-all resize-none"
             required
           ></textarea>
@@ -154,9 +160,9 @@ export default function WasteReportForm({ destinationId, isLoggedIn }: { destina
           className="w-full bg-slate-900 dark:bg-primary hover:bg-slate-800 dark:hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl transition-colors disabled:opacity-50 flex justify-center items-center"
         >
           {isSubmitting ? (
-            <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Mengirim Laporan...</>
+            <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t.explore.wasteReport.submitting}</>
           ) : (
-            'Kirim Laporan'
+            t.explore.wasteReport.submitBtn
           )}
         </button>
       </form>

@@ -10,6 +10,7 @@ export async function login(formData: FormData): Promise<{ error?: string }> {
 
   const supabase = await createClient()
 
+
   const data = {
     email,
     password,
@@ -22,7 +23,7 @@ export async function login(formData: FormData): Promise<{ error?: string }> {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  redirect('/')
 }
 
 export async function signup(formData: FormData): Promise<{ error?: string, success?: boolean, message?: string }> {
@@ -46,7 +47,7 @@ export async function signup(formData: FormData): Promise<{ error?: string, succ
   }
 
   revalidatePath('/', 'layout')
-  redirect('/dashboard')
+  redirect('/')
 }
 
 export async function logout() {
@@ -54,4 +55,24 @@ export async function logout() {
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
   redirect('/')
+}
+
+export async function requestPasswordReset(formData: FormData): Promise<{ error?: string; success?: boolean }> {
+  const email = formData.get('email') as string
+  if (!email) return { error: 'Email is required' }
+  const supabase = await createClient()
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/update-password`,
+  })
+  if (error) return { error: error.message }
+  return { success: true }
+}
+
+export async function updatePassword(formData: FormData): Promise<{ error?: string }> {
+  const password = formData.get('password') as string
+  if (!password) return { error: 'Password is required' }
+  const supabase = await createClient()
+  const { error } = await supabase.auth.updateUser({ password })
+  if (error) return { error: error.message }
+  redirect('/login')
 }

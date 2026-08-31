@@ -4,10 +4,11 @@ import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import AIChatWidget from "@/components/shared/AIChatWidget";
 import PublicLayoutWrapper from "@/components/shared/PublicLayoutWrapper";
 import { Analytics } from '@vercel/analytics/react';
+import { cookies } from 'next/headers';
+import { TranslationProvider } from "@/i18n/TranslationContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -59,48 +60,33 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const locale = (cookieStore.get('NEXT_LOCALE')?.value as 'en' | 'id') || 'en';
+
   return (
-    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+    <html lang={locale} className={`${inter.variable}`} suppressHydrationWarning>
       <head>
-        {/* Google Analytics Placeholder */}
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://cdn.prod.website-files.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://cdn.prod.website-files.com" />
       </head>
-      <body className="antialiased min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50">
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
-          strategy="afterInteractive"
-        />
-        <Script 
-          id="google-analytics" 
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-XXXXXXXXXX');
-            `
-          }}
-        />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <PublicLayoutWrapper 
-            Navbar={<Navbar />} 
-            Footer={<Footer />}
-            ChatWidget={<AIChatWidget />}
-          >
-            {children}
-            <Analytics />
-          </PublicLayoutWrapper>
-        </ThemeProvider>
+      <body className="antialiased min-h-screen flex flex-col bg-slate-50 text-slate-900">
+          <TranslationProvider initialLocale={locale}>
+            <PublicLayoutWrapper 
+              Navbar={<Navbar />} 
+              Footer={<Footer />}
+              ChatWidget={<AIChatWidget />}
+            >
+              {children}
+              <Analytics />
+            </PublicLayoutWrapper>
+          </TranslationProvider>
       </body>
     </html>
   );

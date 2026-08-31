@@ -11,7 +11,7 @@ export default async function KanbanPage() {
       status,
       guests,
       total_price,
-      booking_date,
+      date,
       user_id,
       destinations (title)
     `)

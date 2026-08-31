@@ -37,7 +37,7 @@ export default async function AdminBookings() {
                 <td className="p-4 text-gray-600 text-sm font-mono truncate max-w-[120px]">{booking.user_id}</td>
                 <td className="p-4 font-medium text-gray-900">{booking.destinations?.title}</td>
                 <td className="p-4 text-gray-600">
-                  {new Date(booking.booking_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {new Date(booking.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </td>
                 <td className="p-4 text-gray-600">{booking.guests}</td>
                 <td className="p-4 font-semibold text-gray-900">Rp {Number(booking.total_price).toLocaleString('id-ID')}</td>

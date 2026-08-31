@@ -1,14 +1,19 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { MapPin, Star, Clock, CheckCircle, ChevronLeft, User, Check, X, Map } from 'lucide-react';
+import { MapPin, Star, Clock, CheckCircle, ChevronLeft, User, Users, Check, X, Map, Coffee, Sparkles } from 'lucide-react';
 import { createClient } from "@/utils/supabase/server";
 import BookingForm from '@/components/booking/BookingForm';
 import ReviewForm from '@/components/reviews/ReviewForm';
 import WishlistButton from '@/components/shared/WishlistButton';
 import { getBookedSlots } from '@/components/booking/actions';
+import { getGuidesByDestination } from '@/app/actions/guides';
+import { getAlternativeDestinations } from '@/app/actions/density';
+import DestinationGuides from '@/components/explore/DestinationGuides';
 import WasteReportForm from '@/components/explore/WasteReportForm';
 import { Leaf } from 'lucide-react';
 import type { Metadata } from 'next';
+import { getTranslation } from '@/i18n/server';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -51,20 +56,24 @@ export async function generateStaticParams() {
 }
 export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const t = await getTranslation();
   const supabase = await createClient();
   
   const { data: detail } = await supabase
     .from('destinations')
     .select(`
       *,
+      reviews (*),
       partners (*)
     `)
     .eq('id', id)
     .single();
 
   if (!detail) {
-    notFound();
+    return notFound();
   }
+  
+  const guides = await getGuidesByDestination(id);
 
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -115,78 +124,95 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   try { excludedBenefits = typeof detail.excluded_benefits === 'string' ? JSON.parse(detail.excluded_benefits) : detail.excluded_benefits || []; } catch(e){}
   try { itinerary = typeof detail.itinerary === 'string' ? JSON.parse(detail.itinerary) : detail.itinerary || []; } catch(e){}
 
-  // Calculate Density Status
-  const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
-  const bookedCounts = await getBookedSlots(id, today);
+  // Fetch Smart Alternatives (Hidden Gems / Low Density)
+  let alternatives = await getAlternativeDestinations(detail.category, 3);
   
-  // Find current active slot or next upcoming slot
-  const currentHour = new Date().getHours();
-  let activeSlot = availableSlots[0]; // fallback
-  for (const slot of availableSlots) {
-    // slot format "08:00 - 10:00"
-    const startHour = parseInt(slot.split(':')[0]);
-    if (currentHour >= startHour - 1 && currentHour <= startHour + 2) {
-      activeSlot = slot;
-      break;
-    }
-  }
+  // Filter out current destination from alternatives
+  alternatives = alternatives.filter((a: any) => a.id !== id);
 
-  const currentVisitors = bookedCounts[activeSlot] || 0;
-  const maxCapacity = detail.max_capacity || 100;
-  const densityPercentage = maxCapacity > 0 ? (currentVisitors / maxCapacity) * 100 : 0;
-  
-  let densityColor = 'bg-green-100 text-green-700 border-green-200';
-  let densityLabel = 'Lancar / Aman';
-  let isDense = false;
-
-  if (densityPercentage >= 90) {
-    densityColor = 'bg-red-100 text-red-700 border-red-200';
-    densityLabel = 'Padat / Penuh';
-    isDense = true;
-  } else if (densityPercentage >= 60) {
-    densityColor = 'bg-yellow-100 text-yellow-700 border-yellow-200';
-    densityLabel = 'Ramai Ramah';
-  }
-
-  // Fetch alternatives if dense
-  let alternatives: any[] = [];
-  if (isDense) {
+  // If no alternatives found, fallback to standard fetch
+  if (alternatives.length === 0) {
     const { data: altData } = await supabase
       .from('destinations')
       .select('id, title, location, image_url, rating, price')
       .eq('category', detail.category)
       .neq('id', id)
       .limit(3);
-    alternatives = altData || [];
+    if (altData) alternatives = altData;
   }
+
+  // Calculate Density Status using Live TomTom Crowd Level
+  const crowdLevel = detail.crowd_level || 'Low';
+  let densityColor = 'bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-800 border-emerald-500/20';
+  let densityLabel = t.detail.status.low;
+  let isDense = false;
+
+  if (crowdLevel === 'Crowded') {
+    densityColor = 'bg-gradient-to-r from-red-500/10 to-rose-500/10 text-red-800 border-red-500/20';
+    densityLabel = t.detail.status.crowded;
+    isDense = true;
+  } else if (crowdLevel === 'Medium') {
+    densityColor = 'bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-800 border-amber-500/20';
+    densityLabel = t.detail.status.medium;
+  }
+
+  // Calculate available slots based on max_capacity and current bookings
+  const today = new Date().toLocaleDateString('en-CA');
+  const bookedCount = await getBookedSlots(id, today) as number;
+  const currentVisitors = bookedCount;
+  const maxCapacity = detail.max_capacity || 100;
+  const availableSlotsList = []; // Kept to satisfy booking form
+
 
   return (
     <div className="bg-surface dark:bg-slate-900 min-h-screen pb-20 transition-colors">
-      {/* Top Banner & Breadcrumb */}
-      <div className="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 py-4 transition-colors">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Link href="/explore" className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
-            <ChevronLeft className="h-4 w-4 mr-1" /> Back to Explore
-          </Link>
-        </div>
-      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+        
+        {/* Back Button */}
+        <Link href="/explore" className="inline-flex items-center text-red-500 hover:text-red-600 mb-6 transition-colors font-medium">
+          <ChevronLeft className="w-5 h-5 mr-1" />
+          {t.detail.backToExplore}
+        </Link>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        {/* Warning Banner for Overtourism */}
+        {isDense && (
+          <div className="mb-8 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 md:p-6 rounded-r-xl">
+            <div className="flex items-start md:items-center">
+              <div className="flex-shrink-0 mt-1 md:mt-0">
+                <span className="text-2xl">🚨</span>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-bold text-red-800 dark:text-red-400">
+                  {t.detail.warningTitle}
+                </h3>
+                <p className="text-red-700 dark:text-red-300 mt-1 text-sm md:text-base">
+                  {t.detail.warningDesc}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content (Left) */}
           <div className="lg:col-span-2 space-y-8">
             {/* Image Banner */}
             <div className="h-[400px] rounded-2xl overflow-hidden relative group cursor-pointer shadow-sm">
                {detail.image_url ? (
-                 <img src={detail.image_url} alt={detail.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                 <Image src={detail.image_url} alt={detail.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" fill sizes="(max-width: 1024px) 100vw, 66vw" priority />
                ) : (
                  <div className="absolute inset-0 bg-gray-100 flex items-center justify-center text-gray-500 border border-gray-200">
                    <div className="text-center">
                       <MapPin className="h-10 w-10 mx-auto text-gray-300 mb-2" />
-                      <span className="font-medium">No Image Available</span>
+                      <span className="font-medium">{t.detail.noImage}</span>
                    </div>
                  </div>
                )}
+            </div>
+
+            {/* Live Traffic Badge (Moved below image) */}
+            <div className={`p-4 rounded-xl border flex items-center justify-center font-bold text-sm md:text-base transition-all ${densityColor} ${isDense ? 'animate-pulse shadow-md ring-2 ring-red-500/50' : 'shadow-sm'}`}>
+              <span className="mr-2">{isDense ? '🚨' : crowdLevel === 'Medium' ? '⚠️' : '✅'}</span>
+              {t.detail.liveTraffic} {densityLabel}
             </div>
 
             {/* Header Info */}
@@ -195,18 +221,15 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 <div>
                   <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">{detail.title}</h1>
                   <div className="flex flex-wrap gap-2">
-                    <div className={`inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold ${densityColor}`}>
-                      Status Live: {densityLabel} ({currentVisitors}/{maxCapacity})
-                    </div>
                     {detail.admin_eco_score >= 4 && (
-                      <div className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">
-                        <Leaf className="w-3 h-3 mr-1" /> Zero Waste Hero
+                      <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-emerald-500/10 to-teal-500/10 text-emerald-700 border border-emerald-500/20 shadow-sm">
+                        <Leaf className="w-3.5 h-3.5 mr-1 text-emerald-500" /> <span className="mt-[1px]">{t.detail.zeroWaste}</span>
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="bg-primary/10 text-primary font-semibold px-3 py-1 rounded-full text-sm">
+                  <span className="bg-gradient-to-r from-primary/10 to-primary/5 text-primary font-bold px-4 py-1.5 rounded-full text-xs md:text-sm border border-primary/20 shadow-sm tracking-wide uppercase">
                     {detail.category}
                   </span>
                   <WishlistButton destinationId={detail.id} />
@@ -216,7 +239,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 <div className="flex items-center">
                   <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1" />
                   <span className="font-bold text-gray-900 dark:text-white mr-1">{detail.rating}</span>
-                  <span className="underline">({detail.reviews_count} reviews)</span>
+                  <span className="underline">({detail.reviews_count} {t.detail.reviews})</span>
                 </div>
                 <span>•</span>
                 <div className="flex items-center">
@@ -228,7 +251,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
 
             {/* Description */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
-              <h2 className="text-xl font-bold text-foreground dark:text-white mb-4">About this destination</h2>
+              <h2 className="text-xl font-bold text-foreground dark:text-white mb-4">{t.detail.about}</h2>
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 whitespace-pre-wrap">
                 {detail.description}
               </p>
@@ -236,7 +259,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
               {highlights.length > 0 && detail.category !== 'Tour' && (
                 <>
                   <h3 className="font-semibold text-foreground mb-3 flex items-center">
-                    <Star className="h-5 w-5 mr-2 text-primary" /> Highlights
+                    <Star className="h-5 w-5 mr-2 text-primary" /> {t.detail.highlights}
                   </h3>
                   <ul className="space-y-2 mb-6">
                     {highlights.map((item: string, idx: number) => (
@@ -255,7 +278,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                   {includedBenefits.length > 0 && (
                     <div>
                       <h3 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center">
-                        <Check className="h-5 w-5 mr-2 text-emerald-500" /> Fasilitas yang Didapat
+                        <Check className="h-5 w-5 mr-2 text-emerald-500" /> {t.detail.included}
                       </h3>
                       <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {includedBenefits.map((item: string, idx: number) => (
@@ -271,7 +294,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                   {excludedBenefits.length > 0 && (
                     <div>
                       <h3 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center">
-                        <X className="h-5 w-5 mr-2 text-rose-500" /> Tidak Termasuk
+                        <X className="h-5 w-5 mr-2 text-rose-500" /> {t.detail.excluded}
                       </h3>
                       <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {excludedBenefits.map((item: string, idx: number) => (
@@ -287,7 +310,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                   {itinerary.length > 0 && (
                     <div>
                       <h3 className="font-semibold text-slate-900 dark:text-white mb-3 flex items-center">
-                        <Map className="h-5 w-5 mr-2 text-blue-500" /> Rencana Perjalanan (Itinerary)
+                        <Map className="h-5 w-5 mr-2 text-blue-500" /> {t.detail.itinerary}
                       </h3>
                       <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent">
                         {itinerary.map((item: string, idx: number) => (
@@ -308,20 +331,20 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
 
               
               <h3 className="font-semibold text-foreground mb-3 flex items-center mt-6">
-                <Clock className="h-5 w-5 mr-2 text-primary" /> Info Kunjungan
+                <Clock className="h-5 w-5 mr-2 text-primary" /> {t.detail.visitInfo}
               </h3>
               <ul className="text-gray-600 space-y-2">
-                <li><span className="font-medium text-gray-800 dark:text-gray-200">Durasi:</span> {detail.duration}</li>
-                <li><span className="font-medium text-gray-800 dark:text-gray-200">Jam Operasional:</span> {detail.operating_hours || '08:00 - 17:00'}</li>
-                <li><span className="font-medium text-gray-800 dark:text-gray-200">Kapasitas per Slot:</span> {maxCapacity} pengunjung</li>
+                <li><span className="font-medium text-gray-800 dark:text-gray-200">{t.detail.duration}</span> {detail.duration}</li>
+                <li><span className="font-medium text-gray-800 dark:text-gray-200">{t.detail.operatingHours}</span> {detail.operating_hours || '08:00 - 17:00'}</li>
+                <li><span className="font-medium text-gray-800 dark:text-gray-200">{t.detail.capacity}</span> {maxCapacity} {t.detail.visitors}</li>
               </ul>
             </div>
 
             {/* Interactive Map */}
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors mt-8">
               <h2 className="text-xl font-bold text-foreground dark:text-white mb-4 flex items-center">
-                <MapPin className="h-6 w-6 text-brand-500 mr-2" /> 
-                Location Map
+                <Coffee className="h-6 w-6 text-brand-500 mr-2" /> 
+                {t.detail.culinary}
               </h2>
               <div className="w-full h-[300px] rounded-xl overflow-hidden border border-gray-200 relative bg-gray-100">
                 <iframe 
@@ -341,49 +364,12 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
             {/* Citizen Waste Reporting */}
             <WasteReportForm destinationId={detail.id} isLoggedIn={!!user} />
 
-            {/* Smart Redirection (Alternatives) */}
-            {isDense && alternatives.length > 0 && (
-              <div className="bg-rose-50 dark:bg-rose-900/10 rounded-2xl p-6 md:p-8 border border-rose-100 dark:border-rose-900/20">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                  Destinasi Sedang Padat
-                </h2>
-                <p className="text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
-                  Untuk kenyamanan Anda, destinasi ini sudah mencapai kapasitas maksimal pada jam ini. Silakan pilih slot waktu lain, atau jelajahi alternatif menarik di sekitar yang saat ini lebih lengang:
-                </p>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {alternatives.map((alt: any) => (
-                    <Link href={`/detail/${alt.id}`} key={alt.id} className="block group">
-                      <div className="flex flex-col h-full bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
-                        <div className="h-40 w-full relative overflow-hidden bg-slate-100">
-                          {alt.image_url ? (
-                            <img src={alt.image_url} alt={alt.title} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">No Image</div>
-                          )}
-                          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-slate-900 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wide shadow-sm">
-                            Kapasitas Tersedia
-                          </div>
-                        </div>
-                        <div className="p-4">
-                          <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:underline">{alt.title}</h3>
-                          <div className="flex items-center justify-between mt-3">
-                            <span className="text-xs text-slate-500 flex items-center"><Star className="h-3 w-3 text-slate-700 dark:text-slate-300 fill-slate-700 dark:fill-slate-300 mr-1"/> {alt.rating}</span>
-                            <span className="text-xs font-semibold text-slate-900 dark:text-white">Rp {Number(alt.price).toLocaleString('id-ID')}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Culinary Spots Section */}
             {culinarySpots.length > 0 && (
               <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
-                  Kuliner Terdekat
+                  {t.detail.culinary}
                 </h2>
                 
                 <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory hide-scrollbar -mx-2 px-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -417,13 +403,13 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
             {detail.partners && (
               <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
                 <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
-                  Tentang Mitra
+                  {t.detail.partners}
                 </h2>
                 
                 <div className="flex flex-col md:flex-row gap-6 items-start">
                   <div className="w-24 h-24 shrink-0 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 shadow-sm flex items-center justify-center">
                     {detail.partners.logo_url ? (
-                      <img src={detail.partners.logo_url} alt={detail.partners.name} className="w-full h-full object-cover" />
+                      <Image src={detail.partners.logo_url} alt={detail.partners.name} className="w-full h-full object-cover" fill sizes="96px" loading="lazy" />
                     ) : (
                       <span className="text-xl font-bold text-gray-400">{detail.partners.name.substring(0,2).toUpperCase()}</span>
                     )}
@@ -443,8 +429,8 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                       {detail.partners.description}
                     </p>
                     
-                    <Link href={`/partner/${detail.partners.id}`} className="text-sm font-semibold text-primary hover:underline">
-                      Lihat Profil Lengkap
+                    <Link href={`/partner/${detail.partners.id}`} className="text-brand-600 hover:text-brand-700 text-sm font-medium mt-2 block">
+                      {t.detail.viewProfile} &rarr;
                     </Link>
                   </div>
                 </div>
@@ -453,9 +439,9 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
 
             {/* Reviews Section */}
             <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
-              <h2 className="text-xl font-bold text-foreground dark:text-white mb-6 flex items-center">
+              <h2 className="text-2xl font-bold text-foreground dark:text-white mb-6 flex items-center">
                 <Star className="h-6 w-6 text-yellow-400 fill-yellow-400 mr-2" /> 
-                Reviews ({reviews?.length || 0})
+                {t.detail.reviews} ({reviews?.length || 0})
               </h2>
 
               <div className="space-y-6">
@@ -482,19 +468,85 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                     </div>
                   ))
                 ) : (
-                  <p className="text-gray-500 text-center py-4">No reviews yet. Be the first to review!</p>
+                  <p className="text-gray-500 italic py-4">{t.detail.noReviews}</p>
                 )}
               </div>
 
               {user ? (
                 <ReviewForm destinationId={detail.id} />
               ) : (
-                <div className="mt-8 bg-gray-50 p-6 rounded-xl text-center border border-gray-100">
-                  <p className="text-gray-600 mb-2">Want to leave a review?</p>
+                <div className="mt-8 bg-slate-50 dark:bg-slate-700 rounded-xl p-6 text-center">
+                  <h3 className="font-semibold text-lg mb-2">{t.detail.wantToReview}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">{t.detail.loginToReview}</p>
                   <Link href="/login" className="text-primary font-bold hover:underline">Log in to review</Link>
                 </div>
               )}
             </div>
+
+          {/* Tour Guides */}
+          {guides && guides.length > 0 && (
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
+              <DestinationGuides guides={guides} />
+            </div>
+          )}
+
+          {/* Smart Redirection (Alternatives) - Moved to bottom */}
+          {alternatives.length > 0 && (
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-800 dark:to-indigo-950 rounded-2xl p-6 md:p-8 shadow-sm border border-indigo-100 dark:border-indigo-800 mt-8">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xl font-bold text-indigo-900 dark:text-indigo-100 flex items-center">
+                  <Sparkles className="h-6 w-6 text-indigo-500 mr-2" /> 
+                  {t.detail.smartAlternative}
+                </h2>
+                <span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                  {t.detail.hiddenGems}
+                </span>
+              </div>
+              <p className="text-indigo-700/80 dark:text-indigo-300 mb-6 text-sm">
+                {t.detail.smartDesc}
+              </p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                  {alternatives.map((alt: any, index: number) => {
+                    // Mocking alternative distances and vibes
+                    const mockDistance = index === 0 ? t.detail.altDistance1 : index === 1 ? t.detail.altDistance2 : t.detail.altDistance3;
+                    const mockVibe = index === 0 ? t.detail.altVibe1 : index === 1 ? t.detail.altVibe2 : t.detail.altVibe3;
+                    
+                    return (
+                      <Link href={`/detail/${alt.id}`} key={alt.id} className="block group">
+                        <div className="flex flex-col h-full bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
+                          <div className="h-40 w-full relative overflow-hidden bg-slate-100">
+                            {alt.image_url ? (
+                              <Image src={alt.image_url} alt={alt.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" fill sizes="33vw" loading="lazy" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">No Image</div>
+                            )}
+                            <div className="absolute top-3 left-3 bg-gradient-to-r from-emerald-500 to-teal-400 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-lg flex items-center gap-1 border border-white/20">
+                              <CheckCircle className="w-3.5 h-3.5" /> <span className="mt-[1px]">{t.detail.status.low}</span>
+                            </div>
+                          </div>
+                          <div className="p-4 flex flex-col flex-grow">
+                            <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">{alt.title}</h3>
+                            <div className="flex items-center text-xs text-slate-500 mt-1 gap-2">
+                              <span className="flex items-center"><Star className="h-3 w-3 text-amber-500 fill-amber-500 mr-1"/> {alt.rating}</span>
+                              <span>•</span>
+                              <span className="flex items-center"><MapPin className="h-3 w-3 mr-1"/> {mockDistance}</span>
+                            </div>
+                            <div className="mt-3 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1.5 rounded-md">
+                              {mockVibe}
+                            </div>
+                            <div className="mt-auto pt-3 flex items-center justify-between">
+                              <span className="text-xs text-slate-500 line-through">Rp {(alt.price * 1.2).toLocaleString('id-ID')}</span>
+                              <span className="text-sm font-bold text-orange-500">Rp {Number(alt.price).toLocaleString('id-ID')}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Booking Card (Right) */}
