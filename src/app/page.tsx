@@ -7,7 +7,7 @@ import { getBookedSlots } from '@/components/booking/actions';
 import AdSlider from "@/components/shared/AdSlider";
 import ParallaxHero from "@/components/home/ParallaxHero";
 import dynamic from 'next/dynamic';
-const CinematicLogoCloud = dynamic(() => import("@/components/ui/cinematic-logo-cloud"), { ssr: false });
+const CinematicLogoCloud = dynamic(() => import("@/components/ui/cinematic-logo-cloud"));
 import DestinationGrid from "@/components/home/DestinationGrid";
 import CulinarySpotlight from "@/components/home/CulinarySpotlight";
 import YogyakartaAtAGlance from "@/components/home/YogyakartaAtAGlance";

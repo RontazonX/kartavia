@@ -19,7 +19,7 @@ const SCRAPER_USER_AGENTS = [
   'axios', 'got', 'node-fetch', 'urllib', 'libwww-perl'
 ];
 
-export async function middleware(request: NextRequest, event?: NextFetchEvent) {
+export async function proxy(request: NextRequest, event?: NextFetchEvent) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
