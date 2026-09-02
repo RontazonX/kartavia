@@ -1,4 +1,4 @@
-export const revalidate = 60;
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -42,19 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-export async function generateStaticParams() {
-  const { createClient: createJSClient } = await import('@supabase/supabase-js');
-  const supabase = createJSClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-  
-  // Fetch top 10 destinations for static generation
-  const { data: destinations } = await supabase.from('destinations').select('id').limit(10);
-  
-  if (!destinations) return [];
 
-  return destinations.map((destination) => ({
-    id: destination.id,
-  }));
-}
 export default async function DetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const t = await getTranslation();
