@@ -78,13 +78,13 @@ export default async function AboutPage() {
             Temukan destinasi impian Anda hari ini dan buat kenangan indah bersama Kartavia.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link 
+            <Link prefetch={false} 
               href="/explore" 
               className="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-8 rounded-full transition-colors inline-flex items-center justify-center"
             >
               Mulai Eksplorasi
             </Link>
-            <Link 
+            <Link prefetch={false} 
               href="/planner" 
               className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium py-3 px-8 rounded-full transition-colors inline-flex items-center justify-center"
             >

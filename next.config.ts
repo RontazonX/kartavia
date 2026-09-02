@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '5mb',
     },
   },
+  output: 'standalone',
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

@@ -20,7 +20,7 @@ export default async function AdminGuidesPage() {
         <h2 className="text-2xl font-semibold text-black dark:text-white">
           Manage Tour Guides
         </h2>
-        <Link
+        <Link prefetch={false}
           href="/admin/guides/new"
           className="inline-flex items-center justify-center gap-2.5 rounded-lg bg-primary py-3 px-6 text-center font-medium text-white hover:bg-opacity-90 transition-all"
         >
@@ -72,7 +72,7 @@ export default async function AdminGuidesPage() {
                     </td>
                     <td className="py-4 px-4 text-right">
                       <div className="flex items-center justify-end gap-3">
-                        <Link 
+                        <Link prefetch={false} 
                           href={`/admin/guides/${guide.id}`}
                           className="hover:text-primary transition-colors text-slate-500"
                         >

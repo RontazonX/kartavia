@@ -16,7 +16,7 @@ export default function SignInForm() {
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5 mt-8 sm:mt-0">
-        <Link
+        <Link prefetch={false}
           href="/"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
@@ -98,7 +98,7 @@ export default function SignInForm() {
                     <Checkbox checked={isChecked} onChange={setIsChecked} />
                     <span className="block font-normal text-gray-700 text-sm">Keep me logged in</span>
                   </div>
-                  <Link href="/reset-password" className="text-sm text-brand-500 hover:text-brand-600 font-medium">Forgot password?</Link>
+                  <Link prefetch={false} href="/reset-password" className="text-sm text-brand-500 hover:text-brand-600 font-medium">Forgot password?</Link>
                 </div>
                 <div>
                   <Button className="w-full" size="md" type="submit">Sign in</Button>
@@ -109,7 +109,7 @@ export default function SignInForm() {
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 sm:text-start">
                 Don&apos;t have an account? {""}
-                <Link href="/register" className="text-brand-500 hover:text-brand-600 font-medium">Sign Up</Link>
+                <Link prefetch={false} href="/register" className="text-brand-500 hover:text-brand-600 font-medium">Sign Up</Link>
               </p>
             </div>
           </div>

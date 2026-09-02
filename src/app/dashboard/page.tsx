@@ -35,7 +35,7 @@ export default async function DashboardPage() {
           <div className="bg-white dark:bg-slate-800 p-12 rounded-2xl text-center shadow-sm border border-gray-100 dark:border-slate-700 transition-colors">
             <h2 className="text-xl font-semibold mb-2 dark:text-white">No bookings yet</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-6">Looks like you haven't planned your next adventure.</p>
-            <Link href="/explore" className="inline-block bg-primary text-white font-medium px-6 py-3 rounded-full hover:bg-primary-dark transition-colors">
+            <Link prefetch={false} href="/explore" className="inline-block bg-primary text-white font-medium px-6 py-3 rounded-full hover:bg-primary-dark transition-colors">
               Explore Jogja
             </Link>
           </div>
@@ -86,7 +86,7 @@ export default async function DashboardPage() {
                   
                   {booking.status === 'pending' && (
                     <div className="mt-4">
-                      <Link href={`/checkout/pay/${booking.id}`} className="block text-center bg-brand-50 text-brand-600 hover:bg-brand-100 font-medium py-2 rounded-lg transition-colors">
+                      <Link prefetch={false} href={`/checkout/pay/${booking.id}`} className="block text-center bg-brand-50 text-brand-600 hover:bg-brand-100 font-medium py-2 rounded-lg transition-colors">
                         Pay Now
                       </Link>
                     </div>

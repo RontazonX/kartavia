@@ -37,7 +37,7 @@ export default function DestinationGuides({ guides }: DestinationGuidesProps) {
       <div className="grid grid-cols-1 gap-6">
         {guides.map(guide => (
           <div key={guide.id} className="relative group">
-            <Link href={`/guides/${guide.id}`} className="absolute inset-0 z-10" aria-label={`View details of ${guide.name}`} />
+            <Link prefetch={false} href={`/guides/${guide.id}`} className="absolute inset-0 z-10" aria-label={`View details of ${guide.name}`} />
             <div className="relative z-20 pointer-events-none">
               <TourGuideCard 
                 guide={guide} 

@@ -45,7 +45,7 @@ export default function PublicLayoutWrapper({
       <main className={`flex-grow pb-16 md:pb-0 ${!isHome && !isAdmin ? 'pt-16' : ''}`}>
         {!isHome && !isAdmin && !pathname?.startsWith('/detail') && !pathname?.startsWith('/login') && !pathname?.startsWith('/register') && !pathname?.startsWith('/explore') && (
           <div className="hidden md:block w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <Link href="/" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
+            <Link prefetch={false} href="/" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
               <ChevronLeft className="w-4 h-4 mr-1" />
               Back to Home
             </Link>

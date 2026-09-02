@@ -38,7 +38,7 @@ export default function NavbarClient({ user, t }: { user: any; t: any }) {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center">
-              <Link href="/" className="flex items-center gap-2">
+              <Link prefetch={false} href="/" className="flex items-center gap-2">
                 <Image
                   src="/kartavia-logo.png"
                   alt="Kartavia Logo"
@@ -74,32 +74,32 @@ export default function NavbarClient({ user, t }: { user: any; t: any }) {
                  <LanguageSwitcher />
               </div>
               {/* Desktop Links */}
-              <Link href="/explore" className={`text-sm font-medium transition-colors hidden lg:block ${textClass} ${linkHoverClass}`}>
+              <Link prefetch={false} href="/explore" className={`text-sm font-medium transition-colors hidden lg:block ${textClass} ${linkHoverClass}`}>
                 {t.navbar.explore}
               </Link>
-              <Link href="/planner" className={`text-sm font-medium transition-colors hidden lg:flex items-center gap-1 ${isTransparent ? 'text-white hover:text-white/80' : 'text-brand-500 hover:text-brand-600'}`}>
+              <Link prefetch={false} href="/planner" className={`text-sm font-medium transition-colors hidden lg:flex items-center gap-1 ${isTransparent ? 'text-white hover:text-white/80' : 'text-brand-500 hover:text-brand-600'}`}>
                 {t.navbar.planner} ✨
               </Link>
-              <Link href="/guides" className={`text-sm font-medium transition-colors hidden lg:flex items-center gap-1 ${textClass} ${linkHoverClass}`}>
+              <Link prefetch={false} href="/guides" className={`text-sm font-medium transition-colors hidden lg:flex items-center gap-1 ${textClass} ${linkHoverClass}`}>
                 {t.navbar.tourGuides}
               </Link>
               
               {/* Desktop User Section */}
               {user ? (
                 <div className="hidden md:flex items-center gap-4">
-                  <Link href="/dashboard" className={`text-sm font-medium transition-colors ${textClass} ${linkHoverClass}`}>
+                  <Link prefetch={false} href="/dashboard" className={`text-sm font-medium transition-colors ${textClass} ${linkHoverClass}`}>
                     {t.navbar.myBookings}
                   </Link>
-                  <Link href="/dashboard/wishlist" className={`flex items-center transition-colors ${textClass} ${linkHoverClass}`} title={t.navbar.wishlist}>
+                  <Link prefetch={false} href="/dashboard/wishlist" className={`flex items-center transition-colors ${textClass} ${linkHoverClass}`} title={t.navbar.wishlist}>
                     <Heart className="h-5 w-5" />
                   </Link>
                   <div className="flex items-center">
                     <div className={`flex items-center justify-center gap-2 rounded-full border p-1 pr-3 shadow-sm transition-colors
                       ${isTransparent ? 'border-white/20 bg-white/10 text-white' : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100'}`}>
-                      <Link href="/profile" className={`rounded-full p-2 transition-colors hover:opacity-80 ${isTransparent ? 'bg-white/20' : 'bg-gray-100 dark:bg-slate-700'}`} title={t.navbar.profile}>
+                      <Link prefetch={false} href="/profile" className={`rounded-full p-2 transition-colors hover:opacity-80 ${isTransparent ? 'bg-white/20' : 'bg-gray-100 dark:bg-slate-700'}`} title={t.navbar.profile}>
                         <User className={`h-4 w-4 ${isTransparent ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`} />
                       </Link>
-                      <Link href="/profile" className="text-sm font-medium truncate max-w-[100px] hover:opacity-80">
+                      <Link prefetch={false} href="/profile" className="text-sm font-medium truncate max-w-[100px] hover:opacity-80">
                         {user.user_metadata?.first_name || user.email?.split('@')[0]}
                       </Link>
                       <form action={logout} className={`flex items-center ml-1 border-l pl-2 ${isTransparent ? 'border-white/20' : 'border-gray-200 dark:border-slate-700'}`}>
@@ -111,7 +111,7 @@ export default function NavbarClient({ user, t }: { user: any; t: any }) {
                   </div>
                 </div>
               ) : (
-                <Link href="/login" className="hidden md:flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-primary-dark text-white px-4 py-2 font-medium transition-colors shadow-sm shadow-primary/20">
+                <Link prefetch={false} href="/login" className="hidden md:flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-primary-dark text-white px-4 py-2 font-medium transition-colors shadow-sm shadow-primary/20">
                   {t.navbar.signIn}
                 </Link>
               )}
@@ -123,29 +123,29 @@ export default function NavbarClient({ user, t }: { user: any; t: any }) {
       {/* ─── Mobile Bottom Navigation ─── */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800 z-50 pb-safe">
         <div className="flex justify-around items-center h-16 px-2">
-          <Link href="/" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname === '/' ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+          <Link prefetch={false} href="/" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname === '/' ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
             <Home className="h-5 w-5" />
             <span className="text-[10px] font-medium">{t.navbar.home}</span>
           </Link>
-          <Link href="/explore" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/explore') ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+          <Link prefetch={false} href="/explore" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/explore') ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
             <Compass className="h-5 w-5" />
             <span className="text-[10px] font-medium">{t.navbar.explore}</span>
           </Link>
-          <Link href="/planner" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/planner') ? 'text-brand-500' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+          <Link prefetch={false} href="/planner" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/planner') ? 'text-brand-500' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
             <Map className="h-5 w-5" />
             <span className="text-[10px] font-medium">{t.navbar.planner}</span>
           </Link>
-          <Link href="/guides" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/guides') ? 'text-emerald-500' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+          <Link prefetch={false} href="/guides" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/guides') ? 'text-emerald-500' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
             <User className="h-5 w-5" />
             <span className="text-[10px] font-medium">{t.navbar.tourGuides}</span>
           </Link>
           {user ? (
-            <Link href="/profile" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/profile') || pathname.startsWith('/dashboard') ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+            <Link prefetch={false} href="/profile" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/profile') || pathname.startsWith('/dashboard') ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
               <User className="h-5 w-5" />
               <span className="text-[10px] font-medium">{t.navbar.profile}</span>
             </Link>
           ) : (
-            <Link href="/login" className="flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800">
+            <Link prefetch={false} href="/login" className="flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800">
               <User className="h-5 w-5" />
               <span className="text-[10px] font-medium">{t.navbar.signIn}</span>
             </Link>

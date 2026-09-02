@@ -16,7 +16,7 @@ export default function TourGuideCard({ guide, onBook }: TourGuideCardProps) {
     <div className="group relative flex flex-col sm:flex-row gap-6 p-4 sm:p-5 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
       
       {/* Photo Section */}
-      <Link href={`/guides/${guide.id}`} className="relative w-full sm:w-56 h-56 sm:h-auto rounded-xl overflow-hidden shrink-0 bg-gray-100 block">
+      <Link prefetch={false} href={`/guides/${guide.id}`} className="relative w-full sm:w-56 h-56 sm:h-auto rounded-xl overflow-hidden shrink-0 bg-gray-100 block">
         {guide.image_url ? (
           <Image
             src={guide.image_url}
@@ -39,7 +39,7 @@ export default function TourGuideCard({ guide, onBook }: TourGuideCardProps) {
       {/* Content Section */}
       <div className="flex-1 flex flex-col justify-between py-1">
         <div>
-          <Link href={`/guides/${guide.id}`} className="hover:text-[#FF5A5F] transition-colors">
+          <Link prefetch={false} href={`/guides/${guide.id}`} className="hover:text-[#FF5A5F] transition-colors">
             <h3 className="text-xl font-bold text-[#1E293B] mb-2">{guide.name}</h3>
           </Link>
           <p className="text-sm text-[#64748B] mb-4 line-clamp-2 leading-relaxed">

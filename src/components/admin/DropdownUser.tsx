@@ -18,7 +18,7 @@ const DropdownUser = () => {
 
   return (
     <div className="relative">
-      <Link
+      <Link prefetch={false}
         onClick={() => setDropdownOpen(!dropdownOpen)}
         className="flex items-center gap-4"
         href="#"
@@ -44,7 +44,7 @@ const DropdownUser = () => {
         >
           <ul className="flex flex-col gap-5 border-b border-slate-200 dark:border-slate-800 px-6 py-7.5">
             <li>
-              <Link
+              <Link prefetch={false}
                 href="/profile"
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base text-slate-600 dark:text-slate-300"
               >
@@ -53,7 +53,7 @@ const DropdownUser = () => {
               </Link>
             </li>
             <li>
-              <Link
+              <Link prefetch={false}
                 href="/admin/settings"
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base text-slate-600 dark:text-slate-300"
               >

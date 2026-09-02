@@ -17,10 +17,10 @@ export default function CheckoutSuccessPage() {
         </p>
         
         <div className="space-y-4">
-          <Link href="/dashboard" className="block w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-dark transition-colors shadow-md">
+          <Link prefetch={false} href="/dashboard" className="block w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-dark transition-colors shadow-md">
             View My Bookings
           </Link>
-          <Link href="/explore" className="block w-full bg-gray-100 text-gray-700 font-bold py-4 rounded-xl hover:bg-gray-200 transition-colors">
+          <Link prefetch={false} href="/explore" className="block w-full bg-gray-100 text-gray-700 font-bold py-4 rounded-xl hover:bg-gray-200 transition-colors">
             Explore More
           </Link>
         </div>

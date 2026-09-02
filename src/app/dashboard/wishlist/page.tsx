@@ -42,7 +42,7 @@ export default async function WishlistPage() {
           <div className="bg-white p-12 rounded-2xl text-center shadow-sm border border-gray-100">
             <h2 className="text-xl font-semibold mb-2">Your wishlist is empty</h2>
             <p className="text-gray-500 mb-6">Save your favorite destinations to help you plan your next trip.</p>
-            <Link href="/explore" className="inline-block bg-primary text-white font-medium px-6 py-3 rounded-full hover:bg-primary-dark transition-colors">
+            <Link prefetch={false} href="/explore" className="inline-block bg-primary text-white font-medium px-6 py-3 rounded-full hover:bg-primary-dark transition-colors">
               Explore Destinations
             </Link>
           </div>
@@ -55,7 +55,7 @@ export default async function WishlistPage() {
               
               return (
                 <div key={item.id} className="group relative rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden -translate-y-0 hover:-translate-y-1 h-full flex flex-col">
-                  <Link href={`/detail/${dest.id}`} className="absolute inset-0 z-10" aria-label={`View ${dest.title}`}></Link>
+                  <Link prefetch={false} href={`/detail/${dest.id}`} className="absolute inset-0 z-10" aria-label={`View ${dest.title}`}></Link>
                   
                   <div className="absolute top-3 right-3 z-20">
                     <WishlistButton destinationId={dest.id} />

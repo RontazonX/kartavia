@@ -1,3 +1,4 @@
+export const revalidate = 60;
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { createClient } from "@/utils/supabase/server";
@@ -87,7 +88,7 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
   return (
     <div className="bg-surface dark:bg-slate-900 min-h-screen py-10 transition-colors">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="inline-flex items-center text-sm font-medium text-red-500 hover:text-red-600 mb-2 transition-colors">
+        <Link prefetch={false} href="/" className="inline-flex items-center text-sm font-medium text-red-500 hover:text-red-600 mb-2 transition-colors">
           <ChevronLeft className="w-4 h-4 mr-1" />
           {t.explore.backToHome}
         </Link>
@@ -112,7 +113,7 @@ export default async function ExplorePage(props: { searchParams: Promise<{ q?: s
                <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col items-center justify-center transition-colors">
                  <h2 className="text-xl font-semibold mb-2 dark:text-slate-100">{t.explore.noResultsTitle}</h2>
                  <p className="text-gray-500 dark:text-gray-400 mb-6">{t.explore.noResultsDesc}</p>
-                 <Link href="/explore" className="text-primary hover:underline font-medium">{t.explore.clearAllFilters}</Link>
+                 <Link prefetch={false} href="/explore" className="text-primary hover:underline font-medium">{t.explore.clearAllFilters}</Link>
                </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

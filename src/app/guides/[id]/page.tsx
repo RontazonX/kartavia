@@ -65,7 +65,7 @@ export default function GuideDetailPage() {
     <div className="min-h-screen bg-[#F8FAFC] pt-24 pb-24">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <Link href="/guides" className="inline-flex items-center text-[#64748B] hover:text-[#FF5A5F] mb-8 font-medium transition-colors">
+        <Link prefetch={false} href="/guides" className="inline-flex items-center text-[#64748B] hover:text-[#FF5A5F] mb-8 font-medium transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Guides
         </Link>
 
@@ -114,7 +114,7 @@ export default function GuideDetailPage() {
               {destinations.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {destinations.map(dest => (
-                    <Link key={dest.id} href={`/detail/${dest.id}`} className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-[#1E293B] border border-gray-200 transition-colors">
+                    <Link prefetch={false} key={dest.id} href={`/detail/${dest.id}`} className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-lg text-sm text-[#1E293B] border border-gray-200 transition-colors">
                       <MapPin className="w-4 h-4 text-[#FF5A5F]" /> {dest.title}
                     </Link>
                   ))}

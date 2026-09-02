@@ -1,3 +1,4 @@
+export const revalidate = 60;
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { MapPin, AtSign, Map, Briefcase, Star, ArrowLeft } from 'lucide-react'
@@ -37,7 +38,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
         )}
         
         <div className="absolute top-6 left-6 z-10">
-          <Link href="/explore" className="bg-white/80 dark:bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-sm font-semibold flex items-center text-slate-900 dark:text-white hover:bg-white transition-colors">
+          <Link prefetch={false} href="/explore" className="bg-white/80 dark:bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-sm font-semibold flex items-center text-slate-900 dark:text-white hover:bg-white transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Link>
         </div>
@@ -102,7 +103,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {destinations.map((item: any) => (
                   <div key={item.id} className="group relative rounded-2xl bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
-                    <Link href={`/detail/${item.id}`} className="absolute inset-0 z-10"></Link>
+                    <Link prefetch={false} href={`/detail/${item.id}`} className="absolute inset-0 z-10"></Link>
                     
                     <div className="absolute top-3 right-3 z-20">
                       <WishlistButton destinationId={item.id} />

@@ -1,3 +1,4 @@
+export const revalidate = 60;
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Calendar, Users, ArrowRight, Star } from "lucide-react";
@@ -5,7 +6,8 @@ import { createClient } from "@/utils/supabase/server";
 import { getBookedSlots } from '@/components/booking/actions';
 import AdSlider from "@/components/shared/AdSlider";
 import ParallaxHero from "@/components/home/ParallaxHero";
-import CinematicLogoCloud from "@/components/ui/cinematic-logo-cloud";
+import dynamic from 'next/dynamic';
+const CinematicLogoCloud = dynamic(() => import("@/components/ui/cinematic-logo-cloud"), { ssr: false });
 import DestinationGrid from "@/components/home/DestinationGrid";
 import CulinarySpotlight from "@/components/home/CulinarySpotlight";
 import YogyakartaAtAGlance from "@/components/home/YogyakartaAtAGlance";

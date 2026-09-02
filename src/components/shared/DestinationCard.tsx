@@ -72,7 +72,7 @@ export default function DestinationCard({
 
   return (
     <div className="group relative flex flex-col h-full min-h-[380px] w-full overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-      <Link href={`/detail/${id}`} className="absolute inset-0 z-10" aria-label={`View ${title}`}></Link>
+      <Link prefetch={false} href={`/detail/${id}`} className="absolute inset-0 z-10" aria-label={`View ${title}`}></Link>
       
       {/* Image Section */}
       <div className="relative h-[160px] md:h-[200px] w-full overflow-hidden bg-slate-100 flex-shrink-0">

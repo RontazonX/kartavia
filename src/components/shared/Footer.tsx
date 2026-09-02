@@ -10,7 +10,7 @@ export default async function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div className="col-span-1 md:col-span-1">
-            <Link href="/" className="mb-6 block">
+            <Link prefetch={false} href="/" className="mb-6 block">
               <Image
                 src="/kartavia-logo.png"
                 alt="Kartavia Logo"
@@ -33,20 +33,20 @@ export default async function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">{t.footer.explore}</h3>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.destinations}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.tourPackages}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.attractionTickets}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.carRentals}</Link></li>
+              <li><Link prefetch={false} href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.destinations}</Link></li>
+              <li><Link prefetch={false} href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.tourPackages}</Link></li>
+              <li><Link prefetch={false} href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.attractionTickets}</Link></li>
+              <li><Link prefetch={false} href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.carRentals}</Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="text-sm font-semibold text-foreground dark:text-white uppercase tracking-wider mb-4">{t.footer.contactUs}</h3>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.helpCenter}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.privacyPolicy}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.termsOfService}</Link></li>
-              <li><Link href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.contactUs}</Link></li>
+              <li><Link prefetch={false} href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.helpCenter}</Link></li>
+              <li><Link prefetch={false} href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.privacyPolicy}</Link></li>
+              <li><Link prefetch={false} href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.termsOfService}</Link></li>
+              <li><Link prefetch={false} href="#" className="text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">{t.footer.contactUs}</Link></li>
             </ul>
           </div>
           

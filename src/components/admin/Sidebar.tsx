@@ -71,7 +71,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 pt-8 pb-6 border-b border-slate-100 dark:border-slate-800">
-        <Link href="/admin" className="flex items-center gap-3">
+        <Link prefetch={false} href="/admin" className="flex items-center gap-3">
           <div className="bg-primary p-1.5 rounded-lg shadow-sm">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="white"/>
@@ -105,7 +105,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             
             <ul className="mb-6 flex flex-col gap-2">
               <li>
-                <Link
+                <Link prefetch={false}
                   href="/admin"
                   className={`group relative flex items-center gap-3 rounded-xl px-4 py-3 font-medium duration-300 ease-in-out ${
                     pathname === "/admin" 
@@ -118,7 +118,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </Link>
               </li>
               <li>
-                <Link
+                <Link prefetch={false}
                   href="/admin/kanban"
                   className={`group relative flex items-center gap-3 rounded-xl px-4 py-3 font-medium duration-300 ease-in-out ${
                     pathname.includes("kanban") 
@@ -133,7 +133,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </Link>
               </li>
               <li>
-                <Link
+                <Link prefetch={false}
                   href="/admin/calendar"
                   className={`group relative flex items-center gap-3 rounded-xl px-4 py-3 font-medium duration-300 ease-in-out ${
                     pathname.includes("calendar") 
@@ -175,22 +175,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <div className={`overflow-hidden transition-all duration-300 ${expandedMenu === "master" ? "max-h-60 opacity-100 mt-2" : "max-h-0 opacity-0"}`}>
                   <ul className="flex flex-col gap-1 pl-12 pr-4">
                     <li>
-                      <Link href="/admin/destinations" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("destinations") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/destinations" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("destinations") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Destinasi Wisata
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin/guides" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("guides") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/guides" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("guides") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Tour Guides
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin/tours" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("tours") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/tours" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("tours") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Paket Tour
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin/partners" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("partners") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/partners" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("partners") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Mitra Lokal
                       </Link>
                     </li>
@@ -218,17 +218,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <div className={`overflow-hidden transition-all duration-300 ${expandedMenu === "operasional" ? "max-h-60 opacity-100 mt-2" : "max-h-0 opacity-0"}`}>
                   <ul className="flex flex-col gap-1 pl-12 pr-4">
                     <li>
-                      <Link href="/admin/bookings" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("bookings") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/bookings" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("bookings") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Pemesanan (Bookings)
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin/capacity" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("capacity") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/capacity" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("capacity") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Kontrol Kapasitas
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin/waste-reports" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("waste-reports") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/waste-reports" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("waste-reports") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Laporan Sampah
                       </Link>
                     </li>
@@ -264,22 +264,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <div className={`overflow-hidden transition-all duration-300 ${expandedMenu === "admin" ? "max-h-60 opacity-100 mt-2" : "max-h-0 opacity-0"}`}>
                   <ul className="flex flex-col gap-1 pl-12 pr-4">
                     <li>
-                      <Link href="/admin/homepage" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("homepage") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/homepage" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("homepage") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Tampilan Beranda
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin/settings" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("settings") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/settings" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("settings") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Sistem & Akun
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin/security" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("security") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/security" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("security") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Keamanan
                       </Link>
                     </li>
                     <li>
-                      <Link href="/admin/analytics" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("analytics") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                      <Link prefetch={false} href="/admin/analytics" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("analytics") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Analitik Trafik
                       </Link>
                     </li>

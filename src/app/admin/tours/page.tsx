@@ -14,7 +14,7 @@ export default async function AdminTours() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-foreground">Tour Packages</h1>
-        <Link href="/admin/tours/create" className="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors flex items-center">
+        <Link prefetch={false} href="/admin/tours/create" className="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors flex items-center">
           <Plus className="h-4 w-4 mr-2" /> Add Tour
         </Link>
       </div>
@@ -38,7 +38,7 @@ export default async function AdminTours() {
                 <td className="p-4 text-gray-600">Rp {Number(tour.price).toLocaleString('id-ID')}</td>
                 <td className="p-4 text-gray-600">{tour.duration}</td>
                 <td className="p-4 text-right flex justify-end items-center gap-3">
-                  <Link href={`/admin/tours/${tour.id}/edit`} className="text-blue-500 hover:text-blue-700 cursor-pointer" title="Edit">
+                  <Link prefetch={false} href={`/admin/tours/${tour.id}/edit`} className="text-blue-500 hover:text-blue-700 cursor-pointer" title="Edit">
                     <Edit className="h-4 w-4 inline" />
                   </Link>
                   <span className="text-xs text-gray-400">(API Delete)</span>

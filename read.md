@@ -78,7 +78,21 @@ Ingin bergabung dalam inisiatif Avengers? Ikuti protokol S.H.I.E.L.D berikut:
   ### <i>"I love you 3000... lines of code."</i>
 </div>
 
+## 🚀 Infrastruktur & Optimasi Deployment
+
+### PM2 Standalone Execution
+Untuk menjalankan Next.js di production dengan mode standalone agar hemat CPU dan RAM, gunakan perintah PM2 berikut:
+```bash
+pm2 start .next/standalone/server.js --name "kartavia" -i max --max-memory-restart 800M
+```
+*Note: Parameter `--max-memory-restart 800M` mencegah memory leak dengan melakukan auto-restart background saat memory mencapai batas.*
+
+### Nginx Proxy Manager (NPM) Cache
+Buka dashboard Nginx Proxy Manager untuk domain ini dan aktifkan konfigurasi berikut:
+1. **Cache Assets:** Pastikan toggle **Cache Assets** dalam kondisi menyala agar aset statis (Tailwind CSS, gambar, JS client-side) di-serve langsung oleh Nginx tanpa perlu masuk ke container aplikasi.
+2. **Microcaching:** Di tab **Advanced**, masukkan konfigurasi block proxy cache singkat untuk meredam serangan request saat stress test (misal 1000req/s). Ini akan bypass 99% request memori server.
+
 ---
 <div align="center">
-  <sub>Built with Arc Reactor technology by the Marvel Coding Universe Initiative. © 2026</sub>
+  <sub>Built with Arc Reactor technology by the Marvel Coding Universe Initiative. Ac 2026</sub>
 </div>

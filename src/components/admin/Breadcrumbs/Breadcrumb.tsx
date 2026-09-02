@@ -15,7 +15,7 @@ const Breadcrumb = ({ pageName }: BreadcrumbProps) => {
       <nav>
         <ol className="flex items-center gap-2">
           <li>
-            <Link className="font-medium hover:text-primary transition-colors" href="/admin">
+            <Link prefetch={false} className="font-medium hover:text-primary transition-colors" href="/admin">
               Dashboard /
             </Link>
           </li>

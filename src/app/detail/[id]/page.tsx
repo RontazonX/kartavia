@@ -1,3 +1,4 @@
+export const revalidate = 60;
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -169,7 +170,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         
         {/* Back Button */}
-        <Link href="/explore" className="inline-flex items-center text-red-500 hover:text-red-600 mb-6 transition-colors font-medium">
+        <Link prefetch={false} href="/explore" className="inline-flex items-center text-red-500 hover:text-red-600 mb-6 transition-colors font-medium">
           <ChevronLeft className="w-5 h-5 mr-1" />
           {t.detail.backToExplore}
         </Link>
@@ -429,7 +430,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                       {detail.partners.description}
                     </p>
                     
-                    <Link href={`/partner/${detail.partners.id}`} className="text-brand-600 hover:text-brand-700 text-sm font-medium mt-2 block">
+                    <Link prefetch={false} href={`/partner/${detail.partners.id}`} className="text-brand-600 hover:text-brand-700 text-sm font-medium mt-2 block">
                       {t.detail.viewProfile} &rarr;
                     </Link>
                   </div>
@@ -478,7 +479,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 <div className="mt-8 bg-slate-50 dark:bg-slate-700 rounded-xl p-6 text-center">
                   <h3 className="font-semibold text-lg mb-2">{t.detail.wantToReview}</h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-4">{t.detail.loginToReview}</p>
-                  <Link href="/login" className="text-primary font-bold hover:underline">Log in to review</Link>
+                  <Link prefetch={false} href="/login" className="text-primary font-bold hover:underline">Log in to review</Link>
                 </div>
               )}
             </div>
@@ -513,7 +514,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                     const mockVibe = index === 0 ? t.detail.altVibe1 : index === 1 ? t.detail.altVibe2 : t.detail.altVibe3;
                     
                     return (
-                      <Link href={`/detail/${alt.id}`} key={alt.id} className="block group">
+                      <Link prefetch={false} href={`/detail/${alt.id}`} key={alt.id} className="block group">
                         <div className="flex flex-col h-full bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
                           <div className="h-40 w-full relative overflow-hidden bg-slate-100">
                             {alt.image_url ? (

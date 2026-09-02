@@ -53,7 +53,7 @@ export default function DestinationGrid({
     <div className="w-full">
       <div className="mb-4 md:mb-6 flex items-end justify-between">
         <div>
-          <Link href="/explore" className="group flex items-center mb-1">
+          <Link prefetch={false} href="/explore" className="group flex items-center mb-1">
             <h2 className="text-xl md:text-3xl font-bold text-slate-900 group-hover:text-primary transition-colors">{displayTitle}</h2>
             <ChevronRight className="h-5 w-5 md:h-7 md:w-7 ml-1 text-primary md:text-slate-400 group-hover:translate-x-1 transition-transform" />
           </Link>

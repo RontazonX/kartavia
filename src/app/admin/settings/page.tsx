@@ -16,7 +16,7 @@ export default async function SettingsPage() {
         <nav>
           <ol className="flex items-center gap-2">
             <li>
-              <Link className="font-medium text-gray-500 hover:text-primary dark:text-gray-400" href="/admin">
+              <Link prefetch={false} className="font-medium text-gray-500 hover:text-primary dark:text-gray-400" href="/admin">
                 Dashboard /
               </Link>
             </li>

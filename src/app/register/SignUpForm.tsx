@@ -17,7 +17,7 @@ export default function SignUpForm() {
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full pb-10">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5 mt-8 sm:mt-0">
-        <Link
+        <Link prefetch={false}
           href="/"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
@@ -130,7 +130,7 @@ export default function SignUpForm() {
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 sm:text-start">
                 Already have an account?
-                <Link href="/login" className="text-brand-500 hover:text-brand-600 font-medium ml-1">Sign In</Link>
+                <Link prefetch={false} href="/login" className="text-brand-500 hover:text-brand-600 font-medium ml-1">Sign In</Link>
               </p>
             </div>
           </div>

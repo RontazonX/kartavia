@@ -8,7 +8,7 @@ export default function ResetPasswordPage() {
       <div className="bg-white rounded-3xl shadow-xl border border-gray-100 flex overflow-hidden w-full max-w-xl min-h-[500px]">
         <div className="flex flex-col flex-1 w-full p-8 md:p-12">
           <div className="w-full mb-8">
-            <Link
+            <Link prefetch={false}
               href="/login"
               className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700"
             >
