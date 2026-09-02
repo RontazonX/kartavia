@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { MapPin, Star, Heart } from 'lucide-react'
 import WishlistButton from '@/components/shared/WishlistButton'
+import Image from 'next/image'
 
 export default async function WishlistPage() {
   const supabase = await createClient()
@@ -63,7 +64,7 @@ export default async function WishlistPage() {
                   <div className="relative h-48 w-full bg-gray-200 overflow-hidden flex-shrink-0">
                      {dest.image_url ? (
                        /* eslint-disable-next-line @next/next/no-img-element */
-                       <img src={dest.image_url} alt={dest.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                       <Image width={800} height={600} src={dest.image_url} alt={dest.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                      ) : (
                        <div className="w-full h-full bg-gray-300 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
                           <span className="text-gray-500 text-sm">No Image</span>

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { MapPin, AtSign, Map, Briefcase, Star, ArrowLeft } from 'lucide-react'
 import { createClient } from '@/utils/supabase/server'
 import WishlistButton from '@/components/shared/WishlistButton'
+import Image from 'next/image'
 
 export default async function PartnerProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params
@@ -28,7 +29,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
       {/* Banner */}
       <div className="h-48 md:h-72 w-full bg-slate-200 dark:bg-slate-800 relative">
         {partner.banner_url ? (
-          <img src={partner.banner_url} alt={partner.name} className="w-full h-full object-cover" />
+          <Image width={1920} height={1080} src={partner.banner_url} alt={partner.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full bg-gradient-to-r from-brand-500 to-primary flex items-center justify-center">
             <span className="text-white/30 text-4xl font-bold uppercase tracking-widest">{partner.name}</span>
@@ -50,7 +51,7 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
             <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-100 dark:border-slate-700 p-6 flex flex-col items-center text-center">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white dark:border-slate-800 shadow-md mb-4 bg-white">
                 {partner.logo_url ? (
-                  <img src={partner.logo_url} alt={partner.name} className="w-full h-full object-cover" />
+                  <Image width={400} height={400} src={partner.logo_url} alt={partner.name} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-brand-100 flex items-center justify-center text-brand-600 text-3xl font-bold">
                     {partner.name.substring(0,2).toUpperCase()}
@@ -109,7 +110,9 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
 
                     <div className="relative h-48 w-full bg-gray-200 overflow-hidden flex-shrink-0">
                        {item.image_url ? (
-                         <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                         <div className="w-full h-48 sm:h-56 overflow-hidden">
+                           <Image width={800} height={600} src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                         </div>
                        ) : (
                          <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No Image</div>
                        )}

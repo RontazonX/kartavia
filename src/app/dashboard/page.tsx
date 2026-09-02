@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { MapPin, Calendar, Users, CheckCircle, Clock } from 'lucide-react'
+import Image from 'next/image'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -44,7 +45,7 @@ export default async function DashboardPage() {
               <div key={booking.id} className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden flex flex-col h-full hover:shadow-md transition-all">
                 <div className="h-40 bg-gray-200 relative">
                    {booking.destinations?.image_url ? (
-                     <img src={booking.destinations.image_url} alt={booking.destinations.title} className="w-full h-full object-cover" />
+                     <Image width={800} height={600} src={booking.destinations.image_url} alt={booking.destinations.title} className="w-full h-full object-cover" />
                    ) : (
                      <div className="w-full h-full bg-gray-300 flex items-center justify-center">
                         <span className="text-gray-500 text-sm">No Image</span>

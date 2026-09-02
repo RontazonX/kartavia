@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { MapPin, Calendar, Users, ShieldCheck, CreditCard, Mail, Check, Wallet, QrCode, Landmark, Loader2, X } from 'lucide-react'
+import Image from 'next/image'
 import { processPayment, confirmPayment } from './actions'
 import PhoneInput from './PhoneInput'
 import Button from '@/components/ui/button/Button'
@@ -229,7 +230,7 @@ export default function CheckoutForm({ user, detail, destination_id, date, guest
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-20 h-20 rounded-xl bg-gray-200 relative overflow-hidden shrink-0 shadow-inner">
                      {detail.image_url ? (
-                       <img src={detail.image_url} alt={detail.title} className="w-full h-full object-cover" />
+                       <Image width={100} height={100} src={detail.image_url} alt={detail.title} className="w-full h-full object-cover" />
                      ) : (
                        <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500 text-xs">No Image</div>
                      )}

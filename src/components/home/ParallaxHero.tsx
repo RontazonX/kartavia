@@ -130,12 +130,14 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
     <div className="relative w-full h-[100vh] bg-gray-900 overflow-hidden" ref={parallaxRef}>
       <div data-parallax-layers className="absolute inset-0 w-full h-[120vh] -top-[10vh]">
         {/* Layer 1 - Background */}
-        <img
+        <Image
           src={layer1}
-          loading="eager"
-          decoding="async"
-          data-parallax-layer="1"
           alt="Layer 1"
+          width={1920}
+          height={1080}
+          sizes="100vw"
+          priority
+          data-parallax-layer="1"
           className="absolute top-0 left-0 w-full h-[130vh] object-cover pointer-events-none z-0 will-change-transform"
         />
 
@@ -147,12 +149,14 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
         </div>
 
         {/* Layer 2 - Middle (Mountain covering the text) */}
-        <img
+        <Image
           src={layer2}
-          loading="eager"
-          decoding="async"
-          data-parallax-layer="2"
           alt="Layer 2"
+          width={1920}
+          height={1080}
+          sizes="100vw"
+          priority
+          data-parallax-layer="2"
           className="absolute top-0 left-0 w-full h-[130vh] object-cover pointer-events-none z-20 will-change-transform"
         />
 

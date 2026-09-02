@@ -377,7 +377,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                     <div key={idx} className="min-w-[280px] sm:min-w-[320px] flex gap-4 p-4 rounded-xl border border-slate-100 dark:border-slate-700 hover:shadow-md hover:-translate-y-1 transition-all duration-300 snap-start bg-surface dark:bg-slate-900 group cursor-pointer">
                       <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-slate-100 shadow-sm">
                         {spot.image ? (
-                          <img src={spot.image} alt={spot.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          <Image width={100} height={100} src={spot.image} alt={spot.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-slate-300">
                             <span className="text-xs">No image</span>
