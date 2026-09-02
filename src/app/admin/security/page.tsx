@@ -19,7 +19,7 @@ export default async function AdminSecurityPage() {
   // Default values jika belum pernah diset
   const initialSettings = securityData?.data || {
     anti_scraping_enabled: true,
-    rate_limit_max: 60,
+    rate_limit_max: 500,
     rate_limit_window: 60
   }
 

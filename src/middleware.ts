@@ -19,7 +19,7 @@ const SCRAPER_USER_AGENTS = [
   'axios', 'got', 'node-fetch', 'urllib', 'libwww-perl'
 ];
 
-export async function proxy(request: NextRequest, event?: NextFetchEvent) {
+export async function middleware(request: NextRequest, event?: NextFetchEvent) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -87,7 +87,7 @@ export async function proxy(request: NextRequest, event?: NextFetchEvent) {
 
     const settings = data?.data || {
       anti_scraping_enabled: true,
-      rate_limit_max: 60,
+      rate_limit_max: 500,
       rate_limit_window: 60
     };
 

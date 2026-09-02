@@ -13,7 +13,7 @@ export async function updateSecuritySettings(formData: FormData) {
   }
 
   const antiScraping = formData.get('anti_scraping') === 'on'
-  const rateLimitMax = parseInt(formData.get('rate_limit_max') as string) || 60
+  const rateLimitMax = parseInt(formData.get('rate_limit_max') as string) || 500
   const rateLimitWindow = parseInt(formData.get('rate_limit_window') as string) || 60
 
   const data = {

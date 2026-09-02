@@ -97,7 +97,7 @@ export default function SecuritySettings({
               <input 
                 type="number" 
                 name="rate_limit_max" 
-                defaultValue={initialSettings?.rate_limit_max || 60} 
+                defaultValue={initialSettings?.rate_limit_max || 500} 
                 required 
                 className="w-full border border-slate-300 dark:border-slate-600 rounded-xl p-3 bg-transparent dark:text-white focus:ring-primary focus:border-primary transition-colors" 
               />
