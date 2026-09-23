@@ -6,7 +6,7 @@ Kartavia is a premium tourism platform for the Jogja region, heavily inspired by
 ## Color Palette
 - **Base (Background):** White (`#FFFFFF`) - used extensively to create a clean, minimalist feel.
 - **Surface:** Off-white (`#F8FAFC`) - used for subtle cards and backgrounds.
-- **Primary:** Klook-inspired Orange (`#FF5A5F`) or deep Blue (`#0066CC`) - used for primary calls-to-action (CTAs). For Kartavia, we will use a vibrant coral/orange as the primary accent to evoke energy and excitement.
+- **Primary:** Klook-inspired Orange (`#FF5A5F`) or red - used for primary calls-to-action (CTAs). For Kartavia, we will use a vibrant coral/orange as the primary accent to evoke energy and excitement.
 - **Text (Primary):** Dark Gray (`#1E293B`) - for high readability.
 - **Text (Secondary):** Slate Gray (`#64748B`) - for descriptions and less important text.
 

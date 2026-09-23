@@ -96,8 +96,12 @@ export default function NavbarClient({ user, t }: { user: any; t: any }) {
                   <div className="flex items-center">
                     <div className={`flex items-center justify-center gap-2 rounded-full border p-1 pr-3 shadow-sm transition-colors
                       ${isTransparent ? 'border-white/20 bg-white/10 text-white' : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-gray-100'}`}>
-                      <Link prefetch={false} href="/profile" className={`rounded-full p-2 transition-colors hover:opacity-80 ${isTransparent ? 'bg-white/20' : 'bg-gray-100 dark:bg-slate-700'}`} title={t.navbar.profile}>
-                        <User className={`h-4 w-4 ${isTransparent ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`} />
+                      <Link prefetch={false} href="/profile" className={`rounded-full overflow-hidden w-8 h-8 flex items-center justify-center transition-colors hover:opacity-80 ${isTransparent ? 'bg-white/20' : 'bg-gray-100 dark:bg-slate-700'}`} title={t.navbar.profile}>
+                        {user.user_metadata?.avatar_url ? (
+                          <img src={user.user_metadata.avatar_url} alt="User Avatar" className="w-full h-full object-cover" />
+                        ) : (
+                          <User className={`h-4 w-4 ${isTransparent ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`} />
+                        )}
                       </Link>
                       <Link prefetch={false} href="/profile" className="text-sm font-medium truncate max-w-[100px] hover:opacity-80">
                         {user.user_metadata?.first_name || user.email?.split('@')[0]}
@@ -141,7 +145,13 @@ export default function NavbarClient({ user, t }: { user: any; t: any }) {
           </Link>
           {user ? (
             <Link prefetch={false} href="/profile" className={`flex flex-col items-center gap-1 flex-1 py-2 rounded-xl transition-colors ${pathname.startsWith('/profile') || pathname.startsWith('/dashboard') ? 'text-primary' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
-              <User className="h-5 w-5" />
+              {user.user_metadata?.avatar_url ? (
+                <div className="w-5 h-5 rounded-full overflow-hidden">
+                  <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                </div>
+              ) : (
+                <User className="h-5 w-5" />
+              )}
               <span className="text-[10px] font-medium">{t.navbar.profile}</span>
             </Link>
           ) : (

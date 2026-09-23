@@ -11,7 +11,7 @@ interface HeaderProps {
 
 const Header = (props: HeaderProps) => {
   return (
-    <header className="sticky top-0 z-40 flex w-full bg-white dark:bg-slate-900 shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] transition-colors">
+    <header className="print:hidden sticky top-0 z-40 flex w-full bg-white dark:bg-slate-900 shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] transition-colors">
       <div className="flex flex-grow items-center justify-between px-4 py-4 md:px-6 2xl:px-11">
         
         {/* Hamburger Toggle Button for Mobile */}

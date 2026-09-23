@@ -198,10 +198,31 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                )}
             </div>
 
-            {/* Live Traffic Badge (Moved below image) */}
-            <div className={`p-4 rounded-xl border flex items-center justify-center font-bold text-sm md:text-base transition-all ${densityColor} ${isDense ? 'animate-pulse shadow-md ring-2 ring-red-500/50' : 'shadow-sm'}`}>
-              <span className="mr-2">{isDense ? '🚨' : crowdLevel === 'Medium' ? '⚠️' : '✅'}</span>
-              {t.detail.liveTraffic} {densityLabel}
+            {/* Live Traffic Widget (Dashboard Style) */}
+            <div className={`p-5 rounded-2xl border flex flex-col gap-3 font-medium transition-all ${densityColor} ${isDense ? 'shadow-md ring-1 ring-red-500/30' : 'shadow-sm'}`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="relative flex h-3 w-3">
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isDense ? 'bg-red-400' : crowdLevel === 'Medium' ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
+                    <span className={`relative inline-flex rounded-full h-3 w-3 ${isDense ? 'bg-red-500' : crowdLevel === 'Medium' ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
+                  </div>
+                  <span className="text-sm font-bold tracking-wide uppercase opacity-90">{t.detail.liveTraffic} {densityLabel}</span>
+                </div>
+                <span className="text-sm font-bold opacity-90">{Math.round(Math.min((currentVisitors / maxCapacity) * 100, 100))}% Terisi</span>
+              </div>
+              <div className="w-full bg-black/5 dark:bg-white/10 rounded-full h-2.5 overflow-hidden">
+                <div 
+                  className={`h-full rounded-full transition-all duration-1000 ${isDense ? 'bg-red-500' : crowdLevel === 'Medium' ? 'bg-amber-500' : 'bg-emerald-500'}`} 
+                  style={{ width: `${Math.min((currentVisitors / maxCapacity) * 100, 100)}%` }}
+                ></div>
+              </div>
+              <p className="text-xs opacity-75 mt-0.5">
+                {isDense 
+                  ? 'Area sangat padat. Disarankan mengunjungi wisata alternatif atau datang di luar jam sibuk.' 
+                  : crowdLevel === 'Medium' 
+                    ? 'Kondisi cukup ramai. Waktu tunggu mungkin sedikit lebih lama.' 
+                    : 'Waktu yang tepat untuk berkunjung! Kondisi area saat ini terpantau lengang.'}
+              </p>
             </div>
 
             {/* Header Info */}

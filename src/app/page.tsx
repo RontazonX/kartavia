@@ -7,10 +7,17 @@ import { getBookedSlots } from '@/components/booking/actions';
 import AdSlider from "@/components/shared/AdSlider";
 import ParallaxHero from "@/components/home/ParallaxHero";
 import dynamic from 'next/dynamic';
+
 const CinematicLogoCloud = dynamic(() => import("@/components/ui/cinematic-logo-cloud"));
-import DestinationGrid from "@/components/home/DestinationGrid";
-import CulinarySpotlight from "@/components/home/CulinarySpotlight";
-import YogyakartaAtAGlance from "@/components/home/YogyakartaAtAGlance";
+const DestinationGrid = dynamic(() => import("@/components/home/DestinationGrid"), { ssr: true });
+const CulinarySpotlight = dynamic(() => import("@/components/home/CulinarySpotlight"), { ssr: true });
+const YogyakartaAtAGlance = dynamic(() => import("@/components/home/YogyakartaAtAGlance"), { ssr: true });
+const RealtimeDensityMap = dynamic(() => import("@/components/home/RealtimeDensityMap"), { 
+  ssr: true,
+  loading: () => <div className="h-[600px] w-full bg-slate-100 animate-pulse rounded-3xl max-w-7xl mx-auto my-8 border border-gray-200"></div>
+});
+
+import { getDensityMapData } from "@/app/actions/densityMap";
 
 const partners = [
   { name: "Airbnb", slug: "airbnb", text: false },
@@ -86,6 +93,8 @@ export default async function Home() {
     "https://images.unsplash.com/photo-1621574539437-4b726487920f?auto=format&fit=crop&q=80&w=1200"
   ]
 
+  const densityMapData = await getDensityMapData();
+
   return (
     <>
       <script
@@ -136,6 +145,13 @@ export default async function Home() {
         <AdSlider dynamicImages={bannerImages} />
       </section>
 
+
+      {/* Realtime Density Map Section */}
+      <section className="py-8 bg-transparent">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <RealtimeDensityMap data={densityMapData} />
+        </div>
+      </section>
 
       {/* Popular Destinations Section */}
       <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950 transition-colors">

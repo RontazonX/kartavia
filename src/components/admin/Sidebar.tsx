@@ -65,7 +65,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-50 flex h-screen w-72 flex-col overflow-y-hidden bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 duration-300 ease-linear lg:static lg:translate-x-0 ${
+      className={`print:hidden absolute left-0 top-0 z-50 flex h-screen w-72 flex-col overflow-y-hidden bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 duration-300 ease-linear lg:static lg:translate-x-0 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
@@ -281,6 +281,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <li>
                       <Link prefetch={false} href="/admin/analytics" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("analytics") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Analitik Trafik
+                      </Link>
+                    </li>
+                    <li>
+                      <Link prefetch={false} href="/admin/sitemap" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("sitemap") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                        Sitemap & Dokumentasi
                       </Link>
                     </li>
                   </ul>

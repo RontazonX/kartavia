@@ -13,7 +13,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 min-h-[70vh]">
+    <div className="max-w-6xl mx-auto px-4 py-12 min-h-[70vh]">
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.profile.title}</h1>
         <p className="text-gray-500">{t.profile.subtitle}</p>
