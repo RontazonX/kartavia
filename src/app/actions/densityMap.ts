@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { getBookedSlots } from '@/components/booking/actions'
+import { getBulkBookedSlots } from '@/components/booking/actions'
 import { format, addDays } from 'date-fns'
 
 const DUMMY_COORDINATES: Record<string, { lat: number, lng: number, defaultCapacity: number }> = {
@@ -68,14 +68,17 @@ export async function getDensityMapData(): Promise<DestinationDensity[]> {
 
   const todayStr = format(new Date(), 'yyyy-MM-dd');
   const tomorrowStr = format(addDays(new Date(), 1), 'yyyy-MM-dd');
+  const destinationIds = destinations.map(d => d.id);
 
-  const densityData = await Promise.all(destinations.map(async (dest) => {
+  // Use bulk fetch to prevent N+1 query problem
+  const bulkBookings = await getBulkBookedSlots(destinationIds, [todayStr, tomorrowStr]);
+
+  const densityData = destinations.map((dest) => {
     const coords = findCoordinates(dest.title || '');
     const capacity = coords.defaultCapacity;
     
-    // In a real app we'd fetch bookings. Here we use the existing getBookedSlots function
-    const todayBookings = (await getBookedSlots(dest.id, todayStr)) as number;
-    const tomorrowBookings = (await getBookedSlots(dest.id, tomorrowStr)) as number;
+    const todayBookings = bulkBookings[dest.id]?.[todayStr] || 0;
+    const tomorrowBookings = bulkBookings[dest.id]?.[tomorrowStr] || 0;
 
     const todayPercentage = Math.min((todayBookings / capacity) * 100, 100);
     const tomorrowPercentage = Math.min((tomorrowBookings / capacity) * 100, 100);
@@ -90,7 +93,7 @@ export async function getDensityMapData(): Promise<DestinationDensity[]> {
       todayLevel: getLevel(todayPercentage),
       tomorrowLevel: getLevel(tomorrowPercentage)
     };
-  }));
+  });
   
   // Sort by today's density descending
   densityData.sort((a, b) => b.todayPercentage - a.todayPercentage);

@@ -35,29 +35,32 @@ const partners = [
 export default async function Home() {
   const supabase = await createClient();
   
-  // Fetch popular destinations (excluding tours)
-  const { data: popularDestinations } = await supabase
-    .from('destinations')
-    .select('*')
-    .neq('category', 'Tour')
-    .order('rating', { ascending: false })
-    .limit(12);
-
-  // Fetch popular tours
-  const { data: popularTours } = await supabase
-    .from('destinations')
-    .select('*')
-    .eq('category', 'Tour')
-    .order('rating', { ascending: false })
-    .limit(4);
+  const [
+    { data: popularDestinations },
+    { data: popularTours },
+    { data: bannersData },
+    { data: parallaxData },
+    densityMapData
+  ] = await Promise.all([
+    supabase.from('destinations').select('*').neq('category', 'Tour').order('rating', { ascending: false }).limit(12),
+    supabase.from('destinations').select('*').eq('category', 'Tour').order('rating', { ascending: false }).limit(4),
+    supabase.from('homepage_settings').select('data').eq('section', 'banners').single(),
+    supabase.from('homepage_settings').select('data').eq('section', 'parallax_hero').single(),
+    getDensityMapData()
+  ]);
 
   let destinations = popularDestinations || [];
   let tours = popularTours || [];
 
   const today = new Date().toLocaleDateString('en-CA');
-  const enhanceWithCondition = async (dests: any[]) => {
-    return Promise.all(dests.map(async (dest: any) => {
-      const bookedCount = await getBookedSlots(dest.id, today) as number;
+  
+  // Bulk fetch to eliminate N+1 queries
+  const allDestIds = [...destinations.map(d => d.id), ...tours.map(t => t.id)];
+  const bulkBookings = await getBulkBookedSlots(allDestIds, [today]);
+
+  const enhanceWithCondition = (dests: any[]) => {
+    return dests.map((dest: any) => {
+      const bookedCount = bulkBookings[dest.id]?.[today] || 0;
       const maxCapacity = dest.max_capacity || 100;
       const densityPercentage = maxCapacity > 0 ? (bookedCount / maxCapacity) * 100 : 0;
       let crowdLevel = 'Low';
@@ -71,16 +74,12 @@ export default async function Home() {
         ...dest,
         mockCondition: { crowdLevel, weather, isOpen: true }
       };
-    }));
+    });
   };
 
-  destinations = await enhanceWithCondition(destinations);
-  tours = await enhanceWithCondition(tours);
+  destinations = enhanceWithCondition(destinations);
+  tours = enhanceWithCondition(tours);
 
-  // Fetch Homepage Data
-  const { data: bannersData } = await supabase.from('homepage_settings').select('data').eq('section', 'banners').single();
-  const { data: parallaxData } = await supabase.from('homepage_settings').select('data').eq('section', 'parallax_hero').single();
-  
   const parallaxLayers = parallaxData?.data?.layers || [
     "https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795be09b462b2e8ebf71_osmo-parallax-layer-3.webp",
     "https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795b4d5ac529e7d3a562_osmo-parallax-layer-2.webp",
@@ -91,9 +90,7 @@ export default async function Home() {
     "https://images.unsplash.com/photo-1584395630827-860fee695e9c?auto=format&fit=crop&q=80&w=1200",
     "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&q=80&w=1200",
     "https://images.unsplash.com/photo-1621574539437-4b726487920f?auto=format&fit=crop&q=80&w=1200"
-  ]
-
-  const densityMapData = await getDensityMapData();
+  ];
 
   return (
     <>
