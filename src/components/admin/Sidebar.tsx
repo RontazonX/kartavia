@@ -203,7 +203,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <button
                   onClick={() => toggleMenu("operasional")}
                   className={`group relative flex w-full items-center justify-between gap-3 rounded-xl px-4 py-3 font-medium duration-300 ease-in-out ${
-                    expandedMenu === "operasional" || pathname.includes("bookings") || pathname.includes("capacity") || pathname.includes("waste-reports")
+                    expandedMenu === "operasional" || pathname.includes("bookings") || pathname.includes("scanner") || pathname.includes("capacity") || pathname.includes("waste-reports")
                       ? "bg-primary/10 text-primary" 
                       : "bg-slate-50 text-slate-600 hover:bg-slate-100 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-800"
                   }`}
@@ -220,6 +220,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <li>
                       <Link prefetch={false} href="/admin/bookings" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("bookings") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
                         Pemesanan (Bookings)
+                      </Link>
+                    </li>
+                    <li>
+                      <Link prefetch={false} href="/admin/scanner" className={`block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${pathname.includes("scanner") ? "text-primary" : "text-slate-500 hover:text-primary dark:text-slate-400"}`}>
+                        Ticket Scanner
                       </Link>
                     </li>
                     <li>

@@ -51,11 +51,17 @@ export default async function DashboardPage() {
                         <span className="text-gray-500 text-sm">No Image</span>
                      </div>
                    )}
-                   {booking.status === 'paid' ? (
+                   {booking.status === 'paid' && (
                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-green-600 flex items-center shadow-sm">
                        <CheckCircle className="h-3 w-3 mr-1" /> Paid
                      </div>
-                   ) : (
+                   )}
+                   {booking.status === 'used' && (
+                     <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-slate-500 flex items-center shadow-sm">
+                       <CheckCircle className="h-3 w-3 mr-1" /> Used
+                     </div>
+                   )}
+                   {booking.status === 'pending' && (
                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-orange-500 flex items-center shadow-sm">
                        <Clock className="h-3 w-3 mr-1" /> Pending
                      </div>
@@ -84,10 +90,16 @@ export default async function DashboardPage() {
                     <span className="font-bold text-foreground dark:text-white">Rp {Number(booking.total_price).toLocaleString('id-ID')}</span>
                   </div>
                   
-                  {booking.status === 'pending' && (
+                  {booking.status === 'pending' ? (
                     <div className="mt-4">
                       <Link prefetch={false} href={`/checkout/pay/${booking.id}`} className="block text-center bg-brand-50 text-brand-600 hover:bg-brand-100 font-medium py-2 rounded-lg transition-colors">
                         Pay Now
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="mt-4">
+                      <Link prefetch={false} href={`/dashboard/ticket/${booking.id}`} className="block text-center bg-emerald-50 text-emerald-600 hover:bg-emerald-100 font-medium py-2 rounded-lg transition-colors">
+                        View E-Ticket
                       </Link>
                     </div>
                   )}
