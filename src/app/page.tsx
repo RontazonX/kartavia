@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Calendar, Users, ArrowRight, Star } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
-import { getBookedSlots } from '@/components/booking/actions';
+import { getBookedSlots, getBulkBookedSlots } from '@/components/booking/actions';
 import AdSlider from "@/components/shared/AdSlider";
 import ParallaxHero from "@/components/home/ParallaxHero";
 import dynamic from 'next/dynamic';
