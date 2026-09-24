@@ -62,21 +62,32 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
     return notFound();
   }
   
-  const guides = await getGuidesByDestination(id);
+  const today = new Date().toLocaleDateString('en-CA');
 
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const { data: reviews } = await supabase
-    .from('reviews')
-    .select(`
-      id,
-      rating,
-      comment,
-      created_at,
-      profiles:user_id (email)
-    `)
-    .eq('destination_id', id)
-    .order('created_at', { ascending: false });
+  // Parallelize remaining database requests to drastically reduce loading time
+  const [
+    guides,
+    { data: { user } },
+    { data: reviews },
+    alternativesRaw,
+    bookedCount
+  ] = await Promise.all([
+    getGuidesByDestination(id),
+    supabase.auth.getUser(),
+    supabase
+      .from('reviews')
+      .select(`
+        id,
+        rating,
+        comment,
+        created_at,
+        profiles:user_id (email)
+      `)
+      .eq('destination_id', id)
+      .order('created_at', { ascending: false }),
+    getAlternativeDestinations(detail.category, 3),
+    getBookedSlots(id, today)
+  ]);
 
   // Ensure highlights is an array
   let highlights = [];
@@ -113,11 +124,8 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   try { excludedBenefits = typeof detail.excluded_benefits === 'string' ? JSON.parse(detail.excluded_benefits) : detail.excluded_benefits || []; } catch(e){}
   try { itinerary = typeof detail.itinerary === 'string' ? JSON.parse(detail.itinerary) : detail.itinerary || []; } catch(e){}
 
-  // Fetch Smart Alternatives (Hidden Gems / Low Density)
-  let alternatives = await getAlternativeDestinations(detail.category, 3);
-  
   // Filter out current destination from alternatives
-  alternatives = alternatives.filter((a: any) => a.id !== id);
+  let alternatives = (alternativesRaw || []).filter((a: any) => a.id !== id);
 
   // If no alternatives found, fallback to standard fetch
   if (alternatives.length === 0) {
@@ -146,9 +154,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   }
 
   // Calculate available slots based on max_capacity and current bookings
-  const today = new Date().toLocaleDateString('en-CA');
-  const bookedCount = await getBookedSlots(id, today) as number;
-  const currentVisitors = bookedCount;
+  const currentVisitors = bookedCount as number;
   const maxCapacity = detail.max_capacity || 100;
   const availableSlotsList = []; // Kept to satisfy booking form
 
