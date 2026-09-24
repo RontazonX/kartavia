@@ -155,7 +155,6 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
           width={1920}
           height={1080}
           sizes="100vw"
-          priority
           data-parallax-layer="2"
           className="absolute top-0 left-0 w-full h-[130vh] object-cover pointer-events-none z-20 will-change-transform"
         />
