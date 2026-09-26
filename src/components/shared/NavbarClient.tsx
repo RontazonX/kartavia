@@ -107,7 +107,7 @@ export default function NavbarClient({ user, t }: { user: any; t: any }) {
                         {user.user_metadata?.first_name || user.email?.split('@')[0]}
                       </Link>
                       <form action={logout} className={`flex items-center ml-1 border-l pl-2 ${isTransparent ? 'border-white/20' : 'border-gray-200 dark:border-slate-700'}`}>
-                        <button type="submit" className={`transition-colors cursor-pointer ${isTransparent ? 'text-white/70 hover:text-red-300' : 'text-gray-400 hover:text-red-500 dark:hover:text-red-400'}`} title={t.navbar.logOut}>
+                        <button type="submit" className={`transition-colors cursor-pointer ${isTransparent ? 'text-white/70 hover:text-red-300' : 'text-gray-400 hover:text-red-500 dark:hover:text-red-400'}`} title={t.navbar.logOut} aria-label={t.navbar.logOut}>
                           <LogOut className="h-4 w-4" />
                         </button>
                       </form>

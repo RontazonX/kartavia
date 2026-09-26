@@ -77,7 +77,7 @@ export default function AIChatWidget() {
               <Bot className="h-6 w-6" />
               <span className="font-semibold">Kartavia AI Assistant</span>
             </div>
-            <button onClick={() => setIsOpen(false)} className="rounded-full p-1 hover:bg-white/20 transition-colors">
+            <button onClick={() => setIsOpen(false)} className="rounded-full p-1 hover:bg-white/20 transition-colors" aria-label="Tutup Chat">
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -135,6 +135,7 @@ export default function AIChatWidget() {
               <button 
                 type="submit" 
                 disabled={!input.trim()}
+                aria-label="Kirim Pesan"
                 className="absolute right-1 top-1 bottom-1 flex aspect-square items-center justify-center rounded-full bg-brand-500 text-white hover:bg-brand-600 disabled:bg-gray-300 disabled:text-gray-500 transition-colors"
               >
                 <Send className="h-4 w-4" />

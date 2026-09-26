@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -11,6 +11,11 @@ import { cookies } from 'next/headers';
 import { TranslationProvider } from "@/i18n/TranslationContext";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://kartavia.vercel.app'),
@@ -66,7 +71,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const locale = (cookieStore.get('NEXT_LOCALE')?.value as 'en' | 'id') || 'en';
+  const locale = (cookieStore.get('NEXT_LOCALE')?.value as 'en' | 'id') || 'id';
 
   return (
     <html lang={locale} className={`${inter.variable}`} suppressHydrationWarning>
