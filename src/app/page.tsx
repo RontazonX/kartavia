@@ -183,13 +183,17 @@ export default function Home() {
       <div className="flex flex-col min-h-screen">
         {/* Parallax Hero Section */}
         <div className="relative z-10">
-          <Suspense fallback={<div className="h-[100vh] w-full bg-slate-900 animate-pulse" />}>
+          <Suspense fallback={<div className="h-[85vh] md:h-[100vh] w-full bg-slate-900 animate-pulse" />}>
             <HeroSection />
           </Suspense>
         </div>
 
         {/* Promo Banner Section (Moved to Top & Overlapping) */}
-        <Suspense fallback={<div className="h-[200px] w-full max-w-7xl mx-auto bg-slate-200 animate-pulse rounded-2xl relative z-40 mt-4 md:-mt-32 pb-8 px-4 sm:px-6 lg:px-8" />}>
+        <Suspense fallback={
+          <section className="relative z-40 mt-4 md:-mt-32 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+            <div className="w-full rounded-3xl bg-slate-200 dark:bg-slate-800 animate-pulse h-[300px] md:h-[400px]" />
+          </section>
+        }>
           <BannersSection />
         </Suspense>
 
