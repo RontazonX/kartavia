@@ -42,9 +42,12 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
 
       gsap.registerPlugin(ScrollTrigger);
 
-      const triggerElement = parallaxRef.current?.querySelector('[data-parallax-layers]');
+      if (!parallaxRef.current) return;
 
-      if (triggerElement) {
+      let ctx = gsap.context(() => {
+        const triggerElement = parallaxRef.current?.querySelector('[data-parallax-layers]');
+
+        if (triggerElement) {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: parallaxRef.current,
@@ -75,18 +78,23 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
             idx === 0 ? 0 : "<"
           );
         });
-      }
+        }
+      }, parallaxRef);
 
       lenis = new Lenis();
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add((time: number) => { lenis.raf(time * 1000); });
       gsap.ticker.lagSmoothing(0);
+      
+      return ctx;
     };
 
-    initParallax();
+    let ctxRef: any;
+    initParallax().then(ctx => { ctxRef = ctx; });
 
     return () => {
-      if (ScrollTriggerModule) {
+      if (ctxRef) ctxRef.revert();
+      else if (ScrollTriggerModule) {
         ScrollTriggerModule.getAll().forEach((st: any) => st.kill());
       }
       if (lenis) lenis.destroy();
@@ -157,6 +165,7 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
           width={1920}
           height={1080}
           sizes="100vw"
+          priority
           data-parallax-layer="2"
           className="absolute top-0 left-0 w-full h-[130vh] object-cover pointer-events-none z-20 will-change-transform"
         />

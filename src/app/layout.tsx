@@ -10,7 +10,7 @@ import PublicLayoutWrapper from "@/components/shared/PublicLayoutWrapper";
 import { cookies } from 'next/headers';
 import { TranslationProvider } from "@/i18n/TranslationContext";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
 export const viewport: Viewport = {
   width: "device-width",
