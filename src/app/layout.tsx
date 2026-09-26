@@ -6,7 +6,7 @@ import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 import AIChatWidget from "@/components/shared/AIChatWidget";
 import PublicLayoutWrapper from "@/components/shared/PublicLayoutWrapper";
-import { Analytics } from '@vercel/analytics/react';
+
 import { cookies } from 'next/headers';
 import { TranslationProvider } from "@/i18n/TranslationContext";
 
@@ -89,7 +89,7 @@ export default async function RootLayout({
               ChatWidget={<AIChatWidget />}
             >
               {children}
-              <Analytics />
+
             </PublicLayoutWrapper>
           </TranslationProvider>
       </body>

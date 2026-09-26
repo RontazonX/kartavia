@@ -23,7 +23,7 @@ const partners = [
   { name: "Airbnb", slug: "airbnb", text: false },
   { name: "Booking.com", slug: "bookingdotcom", text: false },
   { name: "Tripadvisor", slug: "tripadvisor", text: false },
-  { name: "Agoda", slug: "agoda", text: false },
+  { name: "Agoda", text: true, className: "text-lg font-bold text-red-500" },
   { name: "Expedia", slug: "expedia", text: false },
   { name: "Garuda Indonesia", text: true, className: "text-lg font-bold tracking-wide text-blue-600 dark:text-blue-400" },
   { name: "Traveloka", text: true, className: "text-xl font-bold text-cyan-500" },

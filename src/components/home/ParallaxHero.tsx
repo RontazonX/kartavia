@@ -62,8 +62,10 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
         ];
 
         speeds.forEach((layerObj, idx) => {
+          const targets = triggerElement.querySelectorAll(`[data-parallax-layer="${layerObj.layer}"]`);
+          if (targets.length === 0) return;
           tl.fromTo(
-            triggerElement.querySelectorAll(`[data-parallax-layer="${layerObj.layer}"]`),
+            targets,
             { yPercent: 0 },
             {
               yPercent: layerObj.yPercent,
