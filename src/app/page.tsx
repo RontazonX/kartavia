@@ -14,7 +14,6 @@ const DestinationGrid = dynamic(() => import("@/components/home/DestinationGrid"
 const CulinarySpotlight = dynamic(() => import("@/components/home/CulinarySpotlight"), { ssr: true });
 const YogyakartaAtAGlance = dynamic(() => import("@/components/home/YogyakartaAtAGlance"), { ssr: true });
 const RealtimeDensityMap = dynamic(() => import("@/components/home/RealtimeDensityMap"), { 
-  ssr: false,
   loading: () => <div className="h-[600px] w-full bg-slate-100 animate-pulse rounded-3xl" />
 });
 
