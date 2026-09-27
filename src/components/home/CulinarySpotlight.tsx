@@ -110,7 +110,8 @@ export default function CulinarySpotlight() {
                       alt={item.name} 
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       fill
-                      sizes="320px"
+                      sizes="(max-width: 640px) 280px, 320px"
+                      quality={70}
                       loading="lazy"
                     />
                     

@@ -82,7 +82,8 @@ export default function DestinationCard({
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             src={image_url}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
+            sizes="(max-width: 640px) 280px, 320px"
+            quality={70}
             loading="lazy"
           />
         ) : (

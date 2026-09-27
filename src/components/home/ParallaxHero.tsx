@@ -8,7 +8,6 @@ import { useTranslation } from '@/i18n/client';
 export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], mobileBg?: string }) {
   const parallaxRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
-  const [isMobile, setIsMobile] = useState(false);
 
   // Fallback if no layers are passed
   const layer1 = layers?.[0] || "https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795be09b462b2e8ebf71_osmo-parallax-layer-3.webp";
@@ -16,15 +15,8 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
   const layer3 = layers?.[2] || "https://cdn.prod.website-files.com/671752cd4027f01b1b8f1c7f/6717795bb5aceca85011ad83_osmo-parallax-layer-1.webp";
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
-    // Skip heavy parallax libs on mobile
-    if (isMobile) return;
+    // Skip heavy parallax libs on mobile (client side check)
+    if (window.innerWidth < 768) return;
 
     let lenis: any;
     let gsapModule: any;
@@ -99,12 +91,12 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
       }
       if (lenis) lenis.destroy();
     };
-  }, [isMobile]);
+  }, []);
 
-  // ─── MOBILE: lightweight static hero ───
-  if (isMobile) {
-    return (
-      <div className="relative w-full h-[85vh] bg-gray-900 overflow-hidden">
+  return (
+    <>
+      {/* ─── MOBILE: lightweight static hero ─── */}
+      <div className="md:hidden relative w-full h-[85vh] min-h-[700px] bg-gray-900 overflow-hidden">
         {/* Single background image — no parallax, no GSAP, no Lenis */}
         <Image
           src={mobileBg || layer2}
@@ -132,12 +124,9 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
         {/* Gradient Fade */}
         <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-gray-50 dark:from-slate-900 to-transparent z-30 pointer-events-none" />
       </div>
-    );
-  }
 
-  // ─── DESKTOP: full parallax experience ───
-  return (
-    <div className="relative w-full h-[100vh] bg-gray-900 overflow-hidden" ref={parallaxRef}>
+      {/* ─── DESKTOP: full parallax experience ─── */}
+      <div className="hidden md:block relative w-full h-[100vh] min-h-[700px] bg-gray-900 overflow-hidden" ref={parallaxRef}>
       <div data-parallax-layers className="absolute inset-0 w-full h-[120vh] -top-[10vh]">
         {/* Layer 1 - Background */}
         <Image
@@ -188,5 +177,6 @@ export default function ParallaxHero({ layers, mobileBg }: { layers?: string[], 
       {/* Gradient Fade to blend with page body */}
       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-gray-50 dark:from-slate-900 to-transparent z-30 pointer-events-none"></div>
     </div>
+    </>
   );
 }
