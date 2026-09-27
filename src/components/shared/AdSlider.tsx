@@ -178,10 +178,13 @@ export default function AdSlider({ dynamicImages = [] }: { dynamicImages?: strin
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${index === currentIndex ? "bg-white w-8" : "bg-white/50 hover:bg-white/80"
-              }`}
             aria-label={`Go to slide ${index + 1}`}
-          />
+            className="p-2 flex items-center justify-center cursor-pointer min-w-[24px] min-h-[24px]"
+          >
+            <span className={`rounded-full transition-all duration-300 ${
+              index === currentIndex ? "bg-white w-8 h-2.5" : "bg-white/50 hover:bg-white/80 w-2.5 h-2.5"
+            }`} />
+          </button>
         ))}
       </div>
     </div>

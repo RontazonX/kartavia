@@ -44,7 +44,7 @@ export default function NavbarClient({ user, t }: { user: any; t: any }) {
                   alt="Kartavia Logo"
                   width={140}
                   height={32}
-                  className="h-8 w-auto object-contain"
+                  className="h-8 w-[140px] object-contain"
                   priority
                 />
               </Link>

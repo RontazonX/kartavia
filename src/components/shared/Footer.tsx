@@ -16,17 +16,17 @@ export default async function Footer() {
                 alt="Kartavia Logo"
                 width={140}
                 height={32}
-                className="h-8 w-auto object-contain"
+                className="h-8 w-[140px] object-contain"
               />
             </Link>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
               {t.footer.description}
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 dark:text-gray-500 hover:text-primary transition-colors text-sm font-medium">FB</a>
-              <a href="#" className="text-gray-400 dark:text-gray-500 hover:text-primary transition-colors text-sm font-medium">TW</a>
-              <a href="#" className="text-gray-400 dark:text-gray-500 hover:text-primary transition-colors text-sm font-medium">IG</a>
-              <a href="#" className="text-gray-400 dark:text-gray-500 hover:text-primary transition-colors text-sm font-medium">YT</a>
+              <a href="#" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm font-medium">FB</a>
+              <a href="#" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm font-medium">TW</a>
+              <a href="#" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm font-medium">IG</a>
+              <a href="#" className="text-gray-500 dark:text-gray-400 hover:text-primary transition-colors text-sm font-medium">YT</a>
             </div>
           </div>
           
@@ -61,7 +61,7 @@ export default async function Footer() {
               />
               <button 
                 type="submit" 
-                className="flex w-auto flex-shrink-0 items-center justify-center rounded-r-lg border border-transparent bg-primary px-4 py-2 text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:text-sm transition-colors cursor-pointer"
+                className="flex w-auto flex-shrink-0 items-center justify-center rounded-r-lg border border-transparent bg-slate-900 dark:bg-white px-4 py-2 text-base font-medium text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 sm:text-sm transition-colors cursor-pointer"
               >
                 {t.footer.subscribe}
               </button>
@@ -70,7 +70,7 @@ export default async function Footer() {
         </div>
         
         <div className="border-t border-gray-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-400 dark:text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             &copy; {new Date().getFullYear()} Kartavia. {t.footer.rights}
           </p>
         </div>

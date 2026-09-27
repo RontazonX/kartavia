@@ -115,8 +115,14 @@ export default function CulinarySpotlight() {
                     />
                     
                     {/* Floating Buttons/Badges */}
-                    <button className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-600  transition-colors hover:bg-white hover:text-primary shadow-sm cursor-pointer" onClick={(e) => e.preventDefault()}>
-                      <Heart className="h-4 w-4" />
+                    <button 
+                      className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-600 transition-colors hover:bg-white hover:text-primary shadow-sm cursor-pointer" 
+                      onClick={(e) => e.preventDefault()}
+                      aria-label="Simpan ke wishlist"
+                      title="Simpan ke wishlist"
+                    >
+                      <span className="sr-only">Simpan ke wishlist</span>
+                      <Heart className="h-4 w-4" aria-hidden="true" />
                     </button>
                     {item.tags[0] && (
                       <div className="absolute top-3 left-3 z-10 rounded-md bg-white/95 px-2 py-1 font-semibold text-slate-900 text-[10px] uppercase tracking-wider shadow-sm">

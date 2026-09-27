@@ -87,12 +87,14 @@ export default function PromoSlider() {
         <button 
           onClick={prevSlide}
           className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer "
+          aria-label="Previous slide"
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
         <button 
           onClick={nextSlide}
           className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/60 hover:bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer "
+          aria-label="Next slide"
         >
           <ChevronRight className="h-6 w-6" />
         </button>
@@ -103,10 +105,13 @@ export default function PromoSlider() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2.5 h-2.5 rounded-full transition-all cursor-pointer ${
-                index === currentIndex ? 'bg-white w-6' : 'bg-white/50 hover:bg-white/80'
-              }`}
-            />
+              aria-label={`Go to slide ${index + 1}`}
+              className="p-2 flex items-center justify-center cursor-pointer min-w-[24px] min-h-[24px]"
+            >
+              <span className={`rounded-full transition-all ${
+                index === currentIndex ? 'bg-white w-6 h-2.5' : 'bg-white/50 hover:bg-white/80 w-2.5 h-2.5'
+              }`} />
+            </button>
           ))}
         </div>
       </div>

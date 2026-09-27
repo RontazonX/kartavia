@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Marquee } from "./cinematic-logo-cloud-utils/marquee";
@@ -45,14 +46,15 @@ export function CinematicLogoCloud({
       );
     }
     return (
-      <img
+      <Image
         src={`https://cdn.simpleicons.org/${client.slug}`}
         alt={client.name}
+        width={size === "lg" ? 96 : 20}
+        height={size === "lg" ? 24 : 20}
         className={cn(
           size === "lg" ? "h-6 w-auto" : "h-5 w-auto",
           client.invertDark && "dark:invert",
         )}
-        loading="lazy"
       />
     );
   };
@@ -100,14 +102,15 @@ export function CinematicLogoCloud({
               className="flex shrink-0 items-center gap-2.5 rounded-xl border border-zinc-200/80 bg-white px-4 py-2.5 shadow-sm dark:border-white/8 dark:bg-zinc-900 mx-2"
             >
               {brand.slug && (
-                <img
+                <Image
                   src={`https://cdn.simpleicons.org/${brand.slug}`}
                   alt={brand.name}
+                  width={16}
+                  height={16}
                   className={cn(
                     "h-4 w-4 shrink-0",
                     brand.invertDark && "dark:invert",
                   )}
-                  loading="lazy"
                 />
               )}
               <span
