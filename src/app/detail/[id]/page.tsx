@@ -55,7 +55,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
     .select(`
       *,
       reviews (*),
-      partners (*)
+      partners!destinations_partner_id_fkey (*)
     `)
     .eq('id', id)
     .single();
