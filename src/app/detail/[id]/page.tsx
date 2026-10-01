@@ -14,6 +14,7 @@ import DestinationGuides from '@/components/explore/DestinationGuides';
 import WasteReportForm from '@/components/explore/WasteReportForm';
 import { Leaf } from 'lucide-react';
 import LiveTrafficAlert from '@/components/shared/LiveTrafficAlert';
+import SmartAlternativeCards from '@/components/shared/SmartAlternativeCards';
 import type { Metadata } from 'next';
 import { getTranslation } from '@/i18n/server';
 
@@ -159,6 +160,18 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
   const maxCapacity = detail.max_capacity || 100;
   const availableSlotsList = []; // Kept to satisfy booking form
 
+  // Capacity percentage for LiveTrafficAlert
+  const capacityPercent = Math.round(Math.min((currentVisitors / maxCapacity) * 100, 100));
+
+  // Top alternative for intercept modal (first one from the list)
+  const topAlternative = alternatives.length > 0 ? {
+    id: alternatives[0].id,
+    title: alternatives[0].title,
+    image_url: alternatives[0].image_url,
+    price: alternatives[0].price,
+    location: alternatives[0].location
+  } : null;
+
 
   return (
     <div className="bg-surface dark:bg-slate-900 min-h-screen pb-20 transition-colors">
@@ -174,7 +187,7 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
         {/* Warning Banner for Overtourism */}
         {isDense && (
           <div className="mb-8">
-            <LiveTrafficAlert />
+            <LiveTrafficAlert capacityPercent={capacityPercent} waitMinutes={capacityPercent >= 95 ? 45 : 30} />
           </div>
         )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -496,63 +509,12 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
             </div>
           )}
 
-          {/* Smart Redirection (Alternatives) - Moved to bottom */}
+          {/* Smart Redirection (Alternatives) */}
           {alternatives.length > 0 && (
-            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-800 dark:to-indigo-950 rounded-2xl p-6 md:p-8 shadow-sm border border-indigo-100 dark:border-indigo-800 mt-8">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-xl font-bold text-indigo-900 dark:text-indigo-100 flex items-center">
-                  <Sparkles className="h-6 w-6 text-indigo-500 mr-2" /> 
-                  {t.detail.smartAlternative}
-                </h2>
-                <span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-                  {t.detail.hiddenGems}
-                </span>
-              </div>
-              <p className="text-indigo-700/80 dark:text-indigo-300 mb-6 text-sm">
-                {t.detail.smartDesc}
-              </p>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                  {alternatives.map((alt: any, index: number) => {
-                    // Mocking alternative distances and vibes
-                    const mockDistance = index === 0 ? t.detail.altDistance1 : index === 1 ? t.detail.altDistance2 : t.detail.altDistance3;
-                    const mockVibe = index === 0 ? t.detail.altVibe1 : index === 1 ? t.detail.altVibe2 : t.detail.altVibe3;
-                    
-                    return (
-                      <Link prefetch={false} href={`/detail/${alt.id}`} key={alt.id} className="block group">
-                        <div className="flex flex-col h-full bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-shadow">
-                          <div className="h-40 w-full relative overflow-hidden bg-slate-100">
-                            {alt.image_url ? (
-                              <Image src={alt.image_url} alt={alt.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" fill sizes="33vw" loading="lazy" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">No Image</div>
-                            )}
-                            <div className="absolute top-3 left-3 bg-gradient-to-r from-emerald-500 to-teal-400 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-lg flex items-center gap-1 border border-white/20">
-                              <CheckCircle className="w-3.5 h-3.5" /> <span className="mt-[1px]">{t.detail.status.low}</span>
-                            </div>
-                          </div>
-                          <div className="p-4 flex flex-col flex-grow">
-                            <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:text-primary transition-colors">{alt.title}</h3>
-                            <div className="flex items-center text-xs text-slate-500 mt-1 gap-2">
-                              <span className="flex items-center"><Star className="h-3 w-3 text-amber-500 fill-amber-500 mr-1"/> {alt.rating}</span>
-                              <span>•</span>
-                              <span className="flex items-center"><MapPin className="h-3 w-3 mr-1"/> {mockDistance}</span>
-                            </div>
-                            <div className="mt-3 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1.5 rounded-md">
-                              {mockVibe}
-                            </div>
-                            <div className="mt-auto pt-3 flex items-center justify-between">
-                              <span className="text-xs text-slate-500 line-through">Rp {(alt.price * 1.2).toLocaleString('id-ID')}</span>
-                              <span className="text-sm font-bold text-orange-500">Rp {Number(alt.price).toLocaleString('id-ID')}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
+            <div className="mt-8">
+              <SmartAlternativeCards alternatives={alternatives} currentTitle={detail.title} />
+            </div>
+          )}
           </div>
 
           {/* Booking Card (Right) */}
@@ -563,6 +525,9 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
                 pricePerPerson={Number(detail.price)} 
                 availableSlots={availableSlots}
                 maxCapacity={maxCapacity}
+                isDense={isDense}
+                currentTitle={detail.title}
+                topAlternative={topAlternative}
               />
             </div>
           </div>

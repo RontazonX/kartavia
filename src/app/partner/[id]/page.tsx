@@ -19,6 +19,17 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
     .eq('id', resolvedParams.id)
     .single()
 
+  const { data: { user } } = await supabase.auth.getUser()
+
+  let isAdmin = false
+  if (user) {
+    const { data: admin } = await supabase.from('admins').select('*').eq('email', user.email).single()
+    isAdmin = !!admin
+  }
+
+  const isOwner = user && user.email === partner.owner_email
+  const canManage = isAdmin || isOwner
+
   if (!partner) {
     notFound()
   }
@@ -37,10 +48,15 @@ export default async function PartnerProfilePage({ params }: { params: Promise<{
           </div>
         )}
         
-        <div className="absolute top-6 left-6 z-10">
-          <Link prefetch={false} href="/explore" className="bg-white/80 dark:bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-sm font-semibold flex items-center text-slate-900 dark:text-white hover:bg-white transition-colors">
+        <div className="absolute top-6 left-6 z-10 flex gap-3">
+          <Link prefetch={false} href="/explore" className="bg-white/80 dark:bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-sm font-semibold flex items-center text-slate-900 dark:text-white hover:bg-white transition-colors shadow-sm">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back
           </Link>
+          {canManage && (
+            <Link prefetch={false} href={`/partner/${partner.id}/dashboard`} className="bg-brand-500/90 backdrop-blur-md px-4 py-2 rounded-full text-sm font-semibold flex items-center text-white hover:bg-brand-600 transition-colors shadow-sm">
+              Dashboard Pengelola &rarr;
+            </Link>
+          )}
         </div>
       </div>
 

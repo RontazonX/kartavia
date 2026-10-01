@@ -20,16 +20,16 @@ const RealtimeDensityMap = dynamic(() => import("@/components/home/RealtimeDensi
 import { getDensityMapData } from "@/app/actions/densityMap";
 
 const partners = [
-  { name: "Airbnb", slug: "airbnb", text: false },
-  { name: "Booking.com", slug: "bookingdotcom", text: false },
-  { name: "Tripadvisor", slug: "tripadvisor", text: false },
+  { name: "Airbnb", text: true, className: "text-xl font-bold text-rose-500" },
+  { name: "Booking.com", text: true, className: "text-xl font-bold text-blue-900 dark:text-blue-400" },
+  { name: "Tripadvisor", text: true, className: "text-xl font-bold text-green-600 dark:text-green-400" },
   { name: "Agoda", text: true, className: "text-lg font-bold text-red-500" },
-  { name: "Expedia", slug: "expedia", text: false },
+  { name: "Expedia", text: true, className: "text-xl font-bold text-blue-700 dark:text-blue-400" },
   { name: "Garuda Indonesia", text: true, className: "text-lg font-bold tracking-wide text-blue-600 dark:text-blue-400" },
   { name: "Traveloka", text: true, className: "text-xl font-bold text-cyan-500" },
   { name: "Tiket.com", text: true, className: "text-lg font-bold text-yellow-500" },
-  { name: "Gojek", slug: "gojek", text: false, invertDark: true },
-  { name: "Grab", slug: "grab", text: false, invertDark: true },
+  { name: "Gojek", text: true, className: "text-xl font-bold text-green-500" },
+  { name: "Grab", text: true, className: "text-xl font-bold text-green-600 dark:text-green-400" },
 ];
 
 const enhanceWithCondition = (dests: any[], bulkBookings: any, today: string) => {

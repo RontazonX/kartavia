@@ -65,6 +65,12 @@ export default function PartnerForm({ initialData = null, action }: { initialDat
           <input type="text" name="instagram_handle" placeholder="@tour_operator" defaultValue={initialData?.instagram_handle} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" />
         </div>
 
+        <div className="col-span-2 md:col-span-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Owner / Manager Email</label>
+          <input type="email" name="owner_email" placeholder="manager@partner.com" defaultValue={initialData?.owner_email} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary" />
+          <p className="text-xs text-gray-500 mt-1">This email can login to the Partner Dashboard</p>
+        </div>
+
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Description / About</label>
           <textarea name="description" defaultValue={initialData?.description} rows={4} required className="w-full border border-gray-300 rounded-lg p-3 focus:ring-primary focus:border-primary"></textarea>

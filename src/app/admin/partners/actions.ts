@@ -13,6 +13,7 @@ export async function createPartner(formData: FormData) {
   const instagram_handle = formData.get('instagram_handle') as string
   const logo_url = formData.get('logo_url') as string
   const banner_url = formData.get('banner_url') as string
+  const owner_email = formData.get('owner_email') as string
 
   const { error } = await supabase.from('partners').insert({
     name,
@@ -20,7 +21,8 @@ export async function createPartner(formData: FormData) {
     location,
     instagram_handle,
     logo_url,
-    banner_url
+    banner_url,
+    owner_email
   })
 
   if (error) {
@@ -42,6 +44,7 @@ export async function updatePartner(id: string, formData: FormData) {
   const instagram_handle = formData.get('instagram_handle') as string
   const logo_url = formData.get('logo_url') as string
   const banner_url = formData.get('banner_url') as string
+  const owner_email = formData.get('owner_email') as string
 
   const { error } = await supabase.from('partners').update({
     name,
@@ -49,7 +52,8 @@ export async function updatePartner(id: string, formData: FormData) {
     location,
     instagram_handle,
     logo_url,
-    banner_url
+    banner_url,
+    owner_email
   }).eq('id', id)
 
   if (error) {

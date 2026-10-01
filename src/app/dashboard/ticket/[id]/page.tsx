@@ -4,8 +4,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, MapPin, Calendar, Users, CheckCircle, Clock } from 'lucide-react'
 import QRCode from 'react-qr-code'
+import PrintTicketButton from '@/components/shared/PrintTicketButton'
 
-export default async function ETicketPage({ params }: { params: { id: string } }) {
+export default async function ETicketPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -24,7 +26,7 @@ export default async function ETicketPage({ params }: { params: { id: string } }
         image_url
       )
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('user_id', user.id)
     .single()
 
@@ -49,10 +51,11 @@ export default async function ETicketPage({ params }: { params: { id: string } }
     <div className="bg-surface dark:bg-slate-900 min-h-screen py-10 transition-colors">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
         
-        <div className="mb-6">
+        <div className="mb-6 flex justify-between items-center print:hidden">
           <Link href="/dashboard" className="inline-flex items-center text-gray-500 hover:text-primary transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Bookings
           </Link>
+          <PrintTicketButton />
         </div>
 
         <div className={`bg-white dark:bg-slate-800 rounded-2xl shadow-sm border ${isUsed ? 'border-gray-200 dark:border-slate-700 opacity-80' : 'border-primary/20'} overflow-hidden relative`}>

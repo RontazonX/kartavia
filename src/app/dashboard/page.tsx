@@ -12,6 +12,13 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
+  // Check if user is a partner manager
+  const { data: managedPartner } = await supabase
+    .from('partners')
+    .select('id, name')
+    .eq('owner_email', user.email)
+    .single()
+
   // Fetch bookings with related destination
   const { data: bookings } = await supabase
     .from('bookings')
@@ -29,6 +36,19 @@ export default async function DashboardPage() {
   return (
     <div className="bg-surface dark:bg-slate-900 min-h-screen py-10 transition-colors">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {managedPartner && (
+          <div className="mb-8 p-4 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-bold text-brand-900 dark:text-brand-100">Halo Pengelola Desa Wisata!</h2>
+              <p className="text-sm text-brand-700 dark:text-brand-300">Anda masuk sebagai pengelola untuk <strong>{managedPartner.name}</strong>.</p>
+            </div>
+            <Link prefetch={false} href={`/partner/${managedPartner.id}/dashboard`} className="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg text-sm transition-colors whitespace-nowrap">
+              Buka Dashboard Pengelola
+            </Link>
+          </div>
+        )}
+
         <h1 className="text-3xl font-bold text-foreground dark:text-white mb-8">My Bookings</h1>
         
         {!bookings || bookings.length === 0 ? (
