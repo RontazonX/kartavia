@@ -13,6 +13,7 @@ import { getAlternativeDestinations } from '@/app/actions/density';
 import DestinationGuides from '@/components/explore/DestinationGuides';
 import WasteReportForm from '@/components/explore/WasteReportForm';
 import { Leaf } from 'lucide-react';
+import LiveTrafficAlert from '@/components/shared/LiveTrafficAlert';
 import type { Metadata } from 'next';
 import { getTranslation } from '@/i18n/server';
 
@@ -170,21 +171,10 @@ export default async function DetailPage({ params }: { params: Promise<{ id: str
         </Link>
 
         {/* Warning Banner for Overtourism */}
+        {/* Warning Banner for Overtourism */}
         {isDense && (
-          <div className="mb-8 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 md:p-6 rounded-r-xl">
-            <div className="flex items-start md:items-center">
-              <div className="flex-shrink-0 mt-1 md:mt-0">
-                <span className="text-2xl">🚨</span>
-              </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-bold text-red-800 dark:text-red-400">
-                  {t.detail.warningTitle}
-                </h3>
-                <p className="text-red-700 dark:text-red-300 mt-1 text-sm md:text-base">
-                  {t.detail.warningDesc}
-                </p>
-              </div>
-            </div>
+          <div className="mb-8">
+            <LiveTrafficAlert />
           </div>
         )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
